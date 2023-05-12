@@ -49,8 +49,23 @@ jobs:
         sudo -E apt-get clean
 
     - name: SSH connection to Actions
-      uses: ./.github/actions/ssh2action
+      #uses: ./.github/actions/ssh2action
+      uses: P3TERX/ssh2actions@main
+      with:
+        mode: ngrok
+      if: env.SSH_ACTIONS == 'true'
+      env:
+        # After sign up on the https://ngrok.com
+        # You can find this token here: https://dashboard.ngrok.com/auth/your-authtoken
+        NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
 
+        # ngrok server region [us, eu, au, ap, sa, jp, in] (optional, default: us)
+        # You can find this server region here: https://ngrok.com/docs#global-locations
+        NGROK_REGION: us
+
+        # This password you will use when authorizing via SSH
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+        
     - name: Install proxmox dependencies
       env:
         DEBIAN_FRONTEND: noninteractive
@@ -131,7 +146,22 @@ jobs:
         echo "::set-output name=version::$(ls abi-prev* | sed  's/abi-prev/pve-kernel/g' | sed 's/-pve//g')"
 
     - name: SSH connection to Actions
-      uses: ./.github/actions/ssh2action
+      #uses: ./.github/actions/ssh2action
+      uses: P3TERX/ssh2actions@main
+      with:
+        mode: ngrok
+      if: env.SSH_ACTIONS == 'true'
+      env:
+        # After sign up on the https://ngrok.com
+        # You can find this token here: https://dashboard.ngrok.com/auth/your-authtoken
+        NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
+
+        # ngrok server region [us, eu, au, ap, sa, jp, in] (optional, default: us)
+        # You can find this server region here: https://ngrok.com/docs#global-locations
+        NGROK_REGION: us
+
+        # This password you will use when authorizing via SSH
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
 
     - name: Upload kernel directory
       uses: actions/upload-artifact@master
