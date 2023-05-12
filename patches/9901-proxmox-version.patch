@@ -15,7 +15,6 @@
 
  die "no such directory" if ! -d $dir;
 
--die "strange directory name: $dir" if $dir !~ m|^(.*/)?(5.\d.\d+\-\d+\-pve)(/+)?$|;
-+#die "strange directory name: $dir" if $dir !~ m|^(.*/)?(5.\d.\d+\-\d+\-pve)(/+)?$|;
+ die "strange directory name: $dir" if $dir !~ m|^(.*/)?(5.\d.\d+\-\d+\-pve(?:-[\w\d]+))(/+)?$|;
 
  my $apiver = $2;
