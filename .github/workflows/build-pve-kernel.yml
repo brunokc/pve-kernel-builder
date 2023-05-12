@@ -44,7 +44,7 @@ jobs:
         sudo chmod a+w /etc/apt/sources.list
         sudo -E echo "deb http://download.proxmox.com/debian/pve buster pve-no-subscription" >>/etc/apt/sources.list
         sudo -E apt-get update
-        sudo -E apt-get install git nano screen patch fakeroot build-essential devscripts libncurses5 libncurses5-dev libssl-dev bc flex bison libelf-dev libaudit-dev libgtk2.0-dev libperl-dev asciidoc xmlto gnupg gnupg2 rsync lintian debhelper libdw-dev libnuma-dev libslang2-dev sphinx-common asciidoc-base automake cpio dh-python file gcc kmod libiberty-dev  libtool perl-modules python3-minimal sed tar zlib1g-dev liblz4-tool idn
+        sudo -E apt-get install --no-install-recommends git nano screen patch fakeroot build-essential devscripts libncurses5 libncurses5-dev libssl-dev bc flex bison libelf-dev libaudit-dev libgtk2.0-dev libperl-dev asciidoc xmlto gnupg gnupg2 rsync lintian debhelper libdw-dev libnuma-dev libslang2-dev sphinx-common asciidoc-base automake cpio dh-python file gcc kmod libiberty-dev  libtool perl-modules python3-minimal sed tar zlib1g-dev liblz4-tool idn
         sudo -E apt-get autoremove --purge
         sudo -E apt-get clean
 
@@ -55,7 +55,7 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        sudo -E apt-get install libpve-common-perl dwarves
+        sudo -E apt-get install --no-install-recommends libpve-common-perl dwarves
         git clone https://github.com/acmel/dwarves.git
         cd dwarves/
         mkdir build
