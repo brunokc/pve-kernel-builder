@@ -31,25 +31,25 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@master
-    
+
     - name: Initialize environment
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
         #sudo swapoff /swapfile
         sudo rm -rf /swapfile /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
-        #sudo wget -qO - http://download.proxmox.com/debian/proxmox-ve-release-6.x.gpg | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key add -  
+        #sudo wget -qO - http://download.proxmox.com/debian/proxmox-ve-release-6.x.gpg | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key add -
         sudo wget http://download.proxmox.com/debian/proxmox-ve-release-6.x.gpg -O /etc/apt/trusted.gpg.d/proxmox-ve-release-6.x.gpg
         sudo chmod +r /etc/apt/trusted.gpg.d/proxmox-ve-release-6.x.gpg
         sudo chmod a+w /etc/apt/sources.list
         sudo -E echo "deb http://download.proxmox.com/debian/pve buster pve-no-subscription" >>/etc/apt/sources.list
         sudo -E apt-get update
-        sudo -E apt-get install git nano screen patch fakeroot build-essential devscripts libncurses5 libncurses5-dev libssl-dev bc flex bison libelf-dev libaudit-dev libgtk2.0-dev libperl-dev asciidoc xmlto gnupg gnupg2 rsync lintian debhelper libdw-dev libnuma-dev libslang2-dev sphinx-common asciidoc-base automake cpio dh-python file gcc kmod libiberty-dev  libtool perl-modules python3-minimal sed tar zlib1g-dev liblz4-tool idn 
+        sudo -E apt-get install git nano screen patch fakeroot build-essential devscripts libncurses5 libncurses5-dev libssl-dev bc flex bison libelf-dev libaudit-dev libgtk2.0-dev libperl-dev asciidoc xmlto gnupg gnupg2 rsync lintian debhelper libdw-dev libnuma-dev libslang2-dev sphinx-common asciidoc-base automake cpio dh-python file gcc kmod libiberty-dev  libtool perl-modules python3-minimal sed tar zlib1g-dev liblz4-tool idn
         sudo -E apt-get autoremove --purge
         sudo -E apt-get clean
-        
+
     - name: SSH connection to Actions
-      uses: ssh2action.yml@master
+      uses: brunokc/relax-intel-rmrr/.github/workflows/ssh2action.yml@master
 
     - name: Install proxmox dependencies
       env:
@@ -64,22 +64,22 @@ jobs:
         sudo make install
         sudo cp pahole /usr/bin/pahole
         #sudo cp -r /usr/local/lib/* /usr/lib/
-        
+
     - name: Clone source code
       run: git clone $REPO_URL -b $REPO_BRANCH pve-kernel
-    
+
     #- name: Fix ACS patch
     #  run: |
     #    cd pve-kernel
     #    sed -i "s/106 @@/105 @@/g" patches/kernel/0003-pci-Enable-overrides-for-missing-ACS-capabilities-4..patch
     #    sed -i "/pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ACS))/d" patches/kernel/0003-pci-Enable-overrides-for-missing-ACS-capabilities-4..patch
     #    sed -i "s/(dev) ||/(dev))/g" patches/kernel/0003-pci-Enable-overrides-for-missing-ACS-capabilities-4..patch
-    
+
     #- name: Fix lz4 build deps
     #  run: |
     #    cd pve-kernel
     #    #sed -i "s/lz4/liblz4-1/g" debian/control.in
-    
+
     - name: Prepare RMRR patch
       run: |
         cp patches/* pve-kernel/patches/kernel
@@ -90,7 +90,7 @@ jobs:
     #    cd pve-kernel
     #    sed -i 's/${LINUX_TOOLS_DBG_DEB}//' Makefile
     #    #sed -i "s/-e CONFIG_PAGE_TABLE_ISOLATION/-e CONFIG_PAGE_TABLE_ISOLATION \\\ \n-d CONFIG_DEBUG_INFO_BTF/" debian/rules
-    
+
 #     - name: Free up disk space on CI system
 #       run: |
 #         dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
@@ -113,7 +113,7 @@ jobs:
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 V=s
         echo "::set-output name=status::success"
-  
+
     - name: Create Release directory
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       run: |
@@ -123,19 +123,19 @@ jobs:
         cp *.ddeb release/
         #rm release/*dbgsym*.deb
         #rm release/*dbgsym*.ddeb
-        
+
     - name: Init version number
       id: getverion
       run: |
         cd pve-kernel
         echo "::set-output name=version::$(ls abi-prev* | sed  's/abi-prev/pve-kernel/g' | sed 's/-pve//g')"
-    
+
     - name: SSH connection to Actions
-      uses: ssh2action.yml@master
+      uses: brunokc/relax-intel-rmrr/.github/workflows/ssh2action.yml@master
 
     - name: Upload kernel directory
       uses: actions/upload-artifact@master
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
-        name: ${{ format('{0}-dominicx', steps.getverion.outputs.version) }} 
+        name: ${{ format('{0}-dominicx', steps.getverion.outputs.version) }}
         path: pve-kernel/release
