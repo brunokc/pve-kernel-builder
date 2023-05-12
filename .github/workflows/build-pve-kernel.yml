@@ -49,7 +49,7 @@ jobs:
         sudo -E apt-get clean
 
     - name: SSH connection to Actions
-      uses: brunokc/relax-intel-rmrr/.github/actions/ssh2action.yml@master
+      uses: ./.github/actions/ssh2action
 
     - name: Install proxmox dependencies
       env:
@@ -131,7 +131,7 @@ jobs:
         echo "::set-output name=version::$(ls abi-prev* | sed  's/abi-prev/pve-kernel/g' | sed 's/-pve//g')"
 
     - name: SSH connection to Actions
-      uses: brunokc/relax-intel-rmrr/.github/actions/ssh2action.yml@master
+      uses: ./.github/actions/ssh2action
 
     - name: Upload kernel directory
       uses: actions/upload-artifact@master
