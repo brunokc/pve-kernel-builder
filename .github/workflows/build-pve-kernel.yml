@@ -91,20 +91,20 @@ jobs:
     #    sed -i 's/${LINUX_TOOLS_DBG_DEB}//' Makefile
     #    #sed -i "s/-e CONFIG_PAGE_TABLE_ISOLATION/-e CONFIG_PAGE_TABLE_ISOLATION \\\ \n-d CONFIG_DEBUG_INFO_BTF/" debian/rules
     
-    - name: Free up disk space on CI system
-      run: |
-        dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
-        df -h
-        sudo apt-get remove -y '^ghc-8.*'
-        sudo apt-get remove -y '^dotnet-.*'
-        sudo apt-get remove -y '^llvm-.*'
-        sudo apt-get remove -y 'php.*'
-        sudo apt-get remove -y azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell mono-devel
-        sudo apt-get autoremove -y
-        sudo apt-get clean
-        df -h
-        rm -rf /usr/share/dotnet/
-        df -h
+#     - name: Free up disk space on CI system
+#       run: |
+#         dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
+#         df -h
+#         sudo apt-get remove -y '^ghc-8.*'
+#         sudo apt-get remove -y '^dotnet-.*'
+#         sudo apt-get remove -y '^llvm-.*'
+#         sudo apt-get remove -y 'php.*'
+#         sudo apt-get remove -y azure-cli google-cloud-sdk hhvm google-chrome-stable firefox powershell mono-devel
+#         sudo apt-get autoremove -y
+#         sudo apt-get clean
+#         df -h
+#         rm -rf /usr/share/dotnet/
+#         df -h
 
     - name: Compile PVE kernel
       id: compile
