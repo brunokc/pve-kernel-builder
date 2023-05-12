@@ -49,26 +49,7 @@ jobs:
         sudo -E apt-get clean
         
     - name: SSH connection to Actions
-      uses: P3TERX/ssh2actions@main
-      with:
-        mode: ngrok
-      if: env.SSH_ACTIONS == 'true'
-      env:
-        # After sign up on the https://ngrok.com
-        # You can find this token here: https://dashboard.ngrok.com/auth/your-authtoken
-        NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
-    
-        # ngrok server region [us, eu, au, ap, sa, jp, in] (optional, default: us)
-        # You can find this server region here: https://ngrok.com/docs#global-locations
-        NGROK_REGION: us
-
-        # This password you will use when authorizing via SSH
-        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-
-        # Send connection info to Telegram (optional)
-        # You can find related documents here: https://core.telegram.org/bots
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      uses: brunokc/ssh2actions@main
 
     - name: Install proxmox dependencies
       env:
@@ -150,27 +131,8 @@ jobs:
         echo "::set-output name=version::$(ls abi-prev* | sed  's/abi-prev/pve-kernel/g' | sed 's/-pve//g')"
     
     - name: SSH connection to Actions
-      uses: P3TERX/ssh2actions@main
-      with:
-        mode: ngrok
-      if: env.SSH_ACTIONS == 'true'
-      env:
-        # After sign up on the https://ngrok.com
-        # You can find this token here: https://dashboard.ngrok.com/auth/your-authtoken
-        NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
-    
-        # ngrok server region [us, eu, au, ap, sa, jp, in] (optional, default: us)
-        # You can find this server region here: https://ngrok.com/docs#global-locations
-        NGROK_REGION: us
+      uses: brunokc/ssh2actions@main
 
-        # This password you will use when authorizing via SSH
-        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-
-        # Send connection info to Telegram (optional)
-        # You can find related documents here: https://core.telegram.org/bots
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-      
     - name: Upload kernel directory
       uses: actions/upload-artifact@master
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
