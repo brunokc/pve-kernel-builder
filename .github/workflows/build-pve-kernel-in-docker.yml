@@ -24,14 +24,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Hello world action step
+      - name: Docker build
         uses: ./.github/actions/docker
-        id: docker-build
+        id: docker_build
         with:
           branch: ${REPO_BRANCH}
 
       - name: Print version string
-        run: echo "PVE kernel version: ${{ steps.docker-build.outputs.version }}"
+        run: echo "PVE kernel version: ${{ steps.docker_build.outputs.version }}"
 
       - name: Upload kernel directory
         uses: actions/upload-artifact@master
