@@ -71,14 +71,14 @@ jobs:
         DEBIAN_FRONTEND: noninteractive
       run: |
         sudo -E apt-get install --no-install-recommends libpve-common-perl dwarves
-        git clone https://github.com/acmel/dwarves.git
-        cd dwarves/
-        mkdir build
-        cd build/
-        cmake -D__LIB=lib ..
-        sudo make install
-        sudo cp pahole /usr/bin/pahole
-        #sudo cp -r /usr/local/lib/* /usr/lib/
+#        git clone https://github.com/acmel/dwarves.git
+#        cd dwarves/
+#        mkdir build
+#        cd build/
+#        cmake -D__LIB=lib ..
+#        sudo make install
+#        sudo cp pahole /usr/bin/pahole
+#        #sudo cp -r /usr/local/lib/* /usr/lib/
 
     - name: Clone source code
       run: git clone $REPO_URL -b $REPO_BRANCH pve-kernel
