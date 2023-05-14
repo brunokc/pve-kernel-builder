@@ -1,3 +1,5 @@
+name: Build pve-kernel (docker)
+
 on:
   workflow_dispatch:
     #inputs:
@@ -15,6 +17,8 @@ env:
 jobs:
   docker:
     runs-on: debian-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+    
     name: Build pve kernel
     steps:
       - name: Checkout
