@@ -17,8 +17,6 @@ on:
   #    - '.config'
 #  schedule:
 #    - cron: 0 8 * * 5
-  watch:
-    types: started
 
 env:
   REPO_URL: git://git.proxmox.com/git/pve-kernel.git
