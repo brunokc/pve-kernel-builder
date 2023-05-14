@@ -18,14 +18,14 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     if: github.event.repository.owner.id == github.event.sender.id
-    
+
     name: Build pve kernel
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Docker build
-        uses: ./.github/actions/docker
+        uses: ./
         id: docker_build
         with:
           branch: ${REPO_BRANCH}

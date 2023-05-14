@@ -1,0 +1,15 @@
+name: Build PVE Kernel
+description: 'Builds the pve kernel in a container'
+inputs:
+  branch:
+    description: 'Which branch to build'
+    required: true
+    default: pve-kernel-5.15
+outputs:
+  version:
+    description: 'The version string of the built kernel'
+runs:
+  using: 'docker'
+  image: './Dockerfile'
+  args:
+    - ${{ inputs.branch }}
