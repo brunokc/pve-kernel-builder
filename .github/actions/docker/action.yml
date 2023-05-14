@@ -6,7 +6,7 @@ inputs:
     required: true
     default: pve-kernel-5.15
 outputs:
-  version-string: # id of output
+  version:
     description: 'The version string of the built kernel'
 runs:
   using: 'docker'
