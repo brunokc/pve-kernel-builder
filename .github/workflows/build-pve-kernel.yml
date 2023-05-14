@@ -101,10 +101,11 @@ jobs:
     #    cd pve-kernel
     #    #sed -i "s/lz4/liblz4-1/g" debian/control.in
 
-    - name: Prepare RMRR patch
+    - name: Prepare and apply patches
       run: |
-        cp patches/* pve-kernel/patches/kernel
+        cp patches/kernel/*.patch pve-kernel/patches/kernel
         cd pve-kernel
+        for patch in ../patches/*.patch; do echo "Applying patch '$patch'" && patch -p1 < ${patch}; done
 
     #- name: Fix DEBUG_INFO_BTF
     #  run: |
