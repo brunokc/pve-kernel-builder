@@ -16,7 +16,7 @@ env:
 
 jobs:
   docker:
-    runs-on: debian-latest
+    runs-on: ubuntu-latest
     if: github.event.repository.owner.id == github.event.sender.id
     
     name: Build pve kernel
