@@ -59,4 +59,4 @@ RUN set -x \
   && mkdir release \
   && cp *.deb release/ \
   #&& cp *.ddeb release/ \
-  && echo "::set-output name=version::$(ls abi-prev* | sed 's/abi-prev/pve-kernel/g' | sed 's/-pve//g')"
+  && echo "version=$(ls abi-prev* | sed 's/abi-prev/pve-kernel/g' | sed 's/-pve//g')" >> $GITHUB_OUTPUT
