@@ -16,6 +16,6 @@
  die "no such directory" if ! -d $dir;
 
 -warn "\n\nNOTE: strange directory name: $dir\n\n" if $dir !~ m|^(.*/)?(\d+.\d+.\d+\-\d+\-pve)(/+)?$|;
-+warn "\n\nNOTE: strange directory name: $dir\n\n" if $dir !~ m|^(.*/)?(\d+.\d+.\d+\-\d+\-pve(?:-[\w\d]+))(/+)?$|;
++warn "\n\nNOTE: strange directory name: $dir\n\n" if $dir !~ m|^(.*/)?(\d+.\d+.\d+\-\d+\-pve(-[\w\d-]+)?)(/+)?$|;
 
  my $apiver = $2;
