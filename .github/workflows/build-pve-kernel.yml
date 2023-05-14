@@ -2,6 +2,12 @@ name: Build pve-kernel
 
 on:
   workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+        required: false
+        default: false
   #release:
   #  types: published
   #push:
@@ -17,9 +23,9 @@ on:
 env:
   REPO_URL: git://git.proxmox.com/git/pve-kernel.git
   REPO_BRANCH: pve-kernel-5.15
-  CONFIG_FILE: .config
+  #CONFIG_FILE: .config
   #DIY_SH: diy.sh
-  SSH_ACTIONS: true
+  #SSH_ACTIONS: true
   #UPLOAD_BIN_DIR: true
   #TZ: Asia/Shanghai
 
@@ -48,23 +54,23 @@ jobs:
         sudo -E apt-get autoremove --purge
         sudo -E apt-get clean
 
-    - name: SSH connection to Actions
-      #uses: ./.github/actions/ssh2action
-      uses: P3TERX/ssh2actions@main
-      with:
-        mode: ngrok
-      if: env.SSH_ACTIONS == 'true'
-      env:
-        # After sign up on the https://ngrok.com
-        # You can find this token here: https://dashboard.ngrok.com/auth/your-authtoken
-        NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
+#     - name: SSH connection to Actions
+#       #uses: ./.github/actions/ssh2action
+#       uses: P3TERX/ssh2actions@main
+#       with:
+#         mode: ngrok
+#       if: env.SSH_ACTIONS == 'true'
+#       env:
+#         # After sign up on the https://ngrok.com
+#         # You can find this token here: https://dashboard.ngrok.com/auth/your-authtoken
+#         NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
 
-        # ngrok server region [us, eu, au, ap, sa, jp, in] (optional, default: us)
-        # You can find this server region here: https://ngrok.com/docs#global-locations
-        NGROK_REGION: us
+#         # ngrok server region [us, eu, au, ap, sa, jp, in] (optional, default: us)
+#         # You can find this server region here: https://ngrok.com/docs#global-locations
+#         NGROK_REGION: us
 
-        # This password you will use when authorizing via SSH
-        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+#         # This password you will use when authorizing via SSH
+#         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         
     - name: Install proxmox dependencies
       env:
@@ -145,23 +151,23 @@ jobs:
         cd pve-kernel
         echo "::set-output name=version::$(ls abi-prev* | sed  's/abi-prev/pve-kernel/g' | sed 's/-pve//g')"
 
-    - name: SSH connection to Actions
-      #uses: ./.github/actions/ssh2action
-      uses: P3TERX/ssh2actions@main
-      with:
-        mode: ngrok
-      if: env.SSH_ACTIONS == 'true'
-      env:
-        # After sign up on the https://ngrok.com
-        # You can find this token here: https://dashboard.ngrok.com/auth/your-authtoken
-        NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
+#     - name: SSH connection to Actions
+#       #uses: ./.github/actions/ssh2action
+#       uses: P3TERX/ssh2actions@main
+#       with:
+#         mode: ngrok
+#       if: env.SSH_ACTIONS == 'true'
+#       env:
+#         # After sign up on the https://ngrok.com
+#         # You can find this token here: https://dashboard.ngrok.com/auth/your-authtoken
+#         NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
 
-        # ngrok server region [us, eu, au, ap, sa, jp, in] (optional, default: us)
-        # You can find this server region here: https://ngrok.com/docs#global-locations
-        NGROK_REGION: us
+#         # ngrok server region [us, eu, au, ap, sa, jp, in] (optional, default: us)
+#         # You can find this server region here: https://ngrok.com/docs#global-locations
+#         NGROK_REGION: us
 
-        # This password you will use when authorizing via SSH
-        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+#         # This password you will use when authorizing via SSH
+#         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
 
     - name: Upload kernel directory
       uses: actions/upload-artifact@master
@@ -169,3 +175,7 @@ jobs:
       with:
         name: ${{ format('{0}-dominicx', steps.getverion.outputs.version) }}
         path: pve-kernel/release
+
+    - name: Start tmate session on failure
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled && failure() }}
