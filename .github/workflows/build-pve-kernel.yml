@@ -145,11 +145,11 @@ jobs:
         #rm release/*dbgsym*.deb
         #rm release/*dbgsym*.ddeb
 
-    - name: Init version number
-      id: getverion
+    - name: Determine kernel version number for uploading
+      id: getversion
       run: |
         cd pve-kernel
-        echo "::set-output name=version::$(ls abi-prev* | sed  's/abi-prev/pve-kernel/g' | sed 's/-pve//g')"
+        echo "version=$(ls abi-prev* | sed  's/abi-prev/pve-kernel/g' | sed 's/-pve//g')" >> $GITHUB_OUTPUT
 
 #     - name: SSH connection to Actions
 #       #uses: ./.github/actions/ssh2action
@@ -173,7 +173,7 @@ jobs:
       uses: actions/upload-artifact@master
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
-        name: ${{ format('{0}-dominicx', steps.getverion.outputs.version) }}
+        name: ${{ format('{0}-brunokc', steps.getversion.outputs.version) }}
         path: pve-kernel/release
 
     - name: Start tmate session on failure
