@@ -8,6 +8,11 @@ on:
         description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
         required: false
         default: false
+      runner:
+        type: string
+        description: 'target runner for this workflow'
+        required: false
+        default: 'ubuntu-latest'
 
 env:
   REPO_URL: git://git.proxmox.com/git/pve-kernel.git
@@ -16,7 +21,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
     if: github.event.repository.owner.id == github.event.sender.id
 
     steps:
