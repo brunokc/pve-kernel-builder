@@ -1,0 +1,14 @@
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -267,9 +267,8 @@
+        int i;
+
+        /* Never override ACS for legacy devices or devices with ACS caps */
+-       if (!pci_is_pcie(dev) ||
+-               pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ACS))
+-                       return -ENOTTY;
++       if (!pci_is_pcie(dev))
++               return -ENOTTY;
+
+        for (i = 0; i < max_acs_id; i++)
+                if (acs_on_ids[i].vendor == dev->vendor &&
