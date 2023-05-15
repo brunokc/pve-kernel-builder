@@ -8,24 +8,11 @@ on:
         description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
         required: false
         default: false
-  #release:
-  #  types: published
-  #push:
-  #  branches:
-  #    - master
-  #  paths:
-  #    - '.config'
-#  schedule:
-#    - cron: 0 8 * * 5
 
 env:
   REPO_URL: git://git.proxmox.com/git/pve-kernel.git
   REPO_BRANCH: pve-kernel-5.15
-  #CONFIG_FILE: .config
-  #DIY_SH: diy.sh
-  #SSH_ACTIONS: true
   UPLOAD_BIN_DIR: true
-  #TZ: Asia/Shanghai
 
 jobs:
   build:
