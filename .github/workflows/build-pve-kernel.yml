@@ -24,7 +24,7 @@ env:
   #CONFIG_FILE: .config
   #DIY_SH: diy.sh
   #SSH_ACTIONS: true
-  #UPLOAD_BIN_DIR: true
+  UPLOAD_BIN_DIR: true
   #TZ: Asia/Shanghai
 
 jobs:
@@ -122,14 +122,14 @@ jobs:
     - name: Determine kernel version number for uploading
       id: getversion
       run: |
-        cd pve-kernel
-        echo "version=$(ls abi-prev* | sed  's/abi-prev/pve-kernel/g' | sed 's/-pve//g')" >> $GITHUB_OUTPUT
+        cd pve-kernel/build
+        echo "version=$(ls abi-[0-9]* | sed 's/abi-prev/pve-kernel/g' | sed 's/-pve//g')" >> $GITHUB_OUTPUT
 
     - name: Upload kernel directory
       uses: actions/upload-artifact@master
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
-        name: ${{ format('{0}-brunokc', steps.getversion.outputs.version) }}
+        name: ${{ steps.getversion.outputs.version }}
         path: pve-kernel/release
 
     - name: Start tmate session on failure
