@@ -52,37 +52,11 @@ jobs:
         sudo -E apt-get autoremove --purge
         sudo -E apt-get clean
 
-#     - name: SSH connection to Actions
-#       #uses: ./.github/actions/ssh2action
-#       uses: P3TERX/ssh2actions@main
-#       with:
-#         mode: ngrok
-#       if: env.SSH_ACTIONS == 'true'
-#       env:
-#         # After sign up on the https://ngrok.com
-#         # You can find this token here: https://dashboard.ngrok.com/auth/your-authtoken
-#         NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
-
-#         # ngrok server region [us, eu, au, ap, sa, jp, in] (optional, default: us)
-#         # You can find this server region here: https://ngrok.com/docs#global-locations
-#         NGROK_REGION: us
-
-#         # This password you will use when authorizing via SSH
-#         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-        
     - name: Install proxmox dependencies
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
         sudo -E apt-get install --no-install-recommends libpve-common-perl dwarves
-#        git clone https://github.com/acmel/dwarves.git
-#        cd dwarves/
-#        mkdir build
-#        cd build/
-#        cmake -D__LIB=lib ..
-#        sudo make install
-#        sudo cp pahole /usr/bin/pahole
-#        #sudo cp -r /usr/local/lib/* /usr/lib/
 
     - name: Clone source code
       run: git clone $REPO_URL -b $REPO_BRANCH pve-kernel
@@ -150,24 +124,6 @@ jobs:
       run: |
         cd pve-kernel
         echo "version=$(ls abi-prev* | sed  's/abi-prev/pve-kernel/g' | sed 's/-pve//g')" >> $GITHUB_OUTPUT
-
-#     - name: SSH connection to Actions
-#       #uses: ./.github/actions/ssh2action
-#       uses: P3TERX/ssh2actions@main
-#       with:
-#         mode: ngrok
-#       if: env.SSH_ACTIONS == 'true'
-#       env:
-#         # After sign up on the https://ngrok.com
-#         # You can find this token here: https://dashboard.ngrok.com/auth/your-authtoken
-#         NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
-
-#         # ngrok server region [us, eu, au, ap, sa, jp, in] (optional, default: us)
-#         # You can find this server region here: https://ngrok.com/docs#global-locations
-#         NGROK_REGION: us
-
-#         # This password you will use when authorizing via SSH
-#         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
 
     - name: Upload kernel directory
       uses: actions/upload-artifact@master
