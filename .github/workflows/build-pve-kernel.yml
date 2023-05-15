@@ -141,7 +141,7 @@ jobs:
         cd pve-kernel
         mkdir release
         cp *.deb release/
-        cp *.ddeb release/
+        #cp *.ddeb release/
         #rm release/*dbgsym*.deb
         #rm release/*dbgsym*.ddeb
 
