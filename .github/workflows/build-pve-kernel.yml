@@ -39,7 +39,7 @@ jobs:
         sudo chmod +r /etc/apt/trusted.gpg.d/proxmox-ve-release-6.x.gpg
         sudo chmod a+w /etc/apt/sources.list
         echo ============== Sudoers
-        cat /etc/sudoers
+        sudo cat /etc/sudoers
         echo ============== Env:
         printenv | sort
         echo ============== sudo Env:
