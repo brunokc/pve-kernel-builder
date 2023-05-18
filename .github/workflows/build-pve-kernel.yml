@@ -84,11 +84,11 @@ jobs:
         dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
         df -h
         #sudo apt-get remove -y '^ghc-8.*'
-        sudo apt-get remove -y '^dotnet-.*'
-        sudo apt-get remove -y '^temurin-.*-jdk'
+        sudo dpkg --remove '^dotnet-.*'
+        sudo dpkg --remove '^temurin-.*-jdk'
         sudo apt-get remove -y '^llvm-.*'
         sudo apt-get remove -y 'php.*'
-        sudo apt-get remove -y google-cloud-sdk azure-cli microsoft-edge-stable google-chrome-stable firefox powershell mono-devel
+        sudo dpkg --remove google-cloud-sdk azure-cli microsoft-edge-stable google-chrome-stable firefox powershell mono-devel
         sudo apt-get autoremove -y
         sudo apt-get clean
         df -h
