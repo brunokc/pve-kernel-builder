@@ -123,7 +123,7 @@ jobs:
       id: getversion
       run: |
         cd pve-kernel/build
-        echo "version=$(ls abi-[0-9]* | sed 's/abi-prev/pve-kernel/g' | sed 's/-pve//g')" >> $GITHUB_OUTPUT
+        echo "version=$(ls abi-[0-9]* | sed 's/abi/pve-kernel/g' | sed 's/-pve//g')" >> $GITHUB_OUTPUT
 
     - name: Upload kernel directory
       uses: actions/upload-artifact@master
