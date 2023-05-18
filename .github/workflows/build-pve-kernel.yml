@@ -17,6 +17,7 @@ on:
 env:
   REPO_URL: git://git.proxmox.com/git/pve-kernel.git
   REPO_BRANCH: pve-kernel-5.15
+  DEBIAN_RELEASE: bullseye
   UPLOAD_BIN_DIR: true
 
 jobs:
@@ -45,7 +46,8 @@ jobs:
         printenv | sort
         echo ============== sudo Env:
         sudo printenv | sort
-        sudo -E echo "deb http://download.proxmox.com/debian/pve buster pve-no-subscription" >>/etc/apt/sources.list
+        sudo echo "deb http://download.proxmox.com/debian/pve ${DEBIAN_RELEASE} pve-no-subscription" > /etc/apt/sources.list.d/pve-no-subscription.list \
+        #sudo -E echo "deb http://download.proxmox.com/debian/pve bullseye pve-no-subscription" >> /etc/apt/sources.list
         sudo -E apt-get update
         sudo -E apt-get install -y --no-install-recommends git nano screen patch fakeroot build-essential devscripts libncurses5 libncurses5-dev libssl-dev bc flex bison libelf-dev libaudit-dev libgtk2.0-dev libperl-dev asciidoc xmlto gnupg gnupg2 rsync lintian debhelper libdw-dev libnuma-dev libslang2-dev sphinx-common asciidoc-base automake cpio dh-python file gcc kmod libiberty-dev  libtool perl-modules python3-minimal sed tar zlib1g-dev liblz4-tool idn
         sudo -E apt-get autoremove --purge
