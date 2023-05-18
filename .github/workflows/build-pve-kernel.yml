@@ -40,6 +40,7 @@ jobs:
         sudo chmod a+w /etc/apt/sources.list
         echo ============== Sudoers
         sudo cat /etc/sudoers
+        for f in /etc/sudoers.d/*; do echo $f; sudo cat $f; done
         echo ============== Env:
         printenv | sort
         echo ============== sudo Env:
