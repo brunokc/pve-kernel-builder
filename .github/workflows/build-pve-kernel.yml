@@ -61,8 +61,7 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        #sudo -E apt-get install -y --no-install-recommends libpve-common-perl dwarves
-        sudo -E apt-get install -y --no-install-recommends dwarves
+        sudo -E apt-get install -y --no-install-recommends libpve-common-perl dwarves
 
     - name: Clone source code
       run: git clone $REPO_URL -b $REPO_BRANCH pve-kernel
