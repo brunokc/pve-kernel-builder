@@ -38,15 +38,15 @@ jobs:
         #sudo wget -qO - http://download.proxmox.com/debian/proxmox-ve-release-6.x.gpg | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key add -
         sudo wget http://download.proxmox.com/debian/proxmox-ve-release-6.x.gpg -O /etc/apt/trusted.gpg.d/proxmox-ve-release-6.x.gpg
         sudo chmod +r /etc/apt/trusted.gpg.d/proxmox-ve-release-6.x.gpg
-        sudo chmod a+w /etc/apt/sources.list
-        echo ============== Sudoers
-        sudo cat /etc/sudoers
-        for f in /etc/sudoers.d/*; do echo $f; sudo cat $f; done
-        echo ============== Env:
-        printenv | sort
-        echo ============== sudo Env:
-        sudo printenv | sort
-        sudo echo "deb http://download.proxmox.com/debian/pve ${DEBIAN_RELEASE} pve-no-subscription" > /etc/apt/sources.list.d/pve-no-subscription.list \
+        #sudo chmod a+w /etc/apt/sources.list
+        #echo ============== Sudoers
+        #sudo cat /etc/sudoers
+        #for f in /etc/sudoers.d/*; do echo $f; sudo cat $f; done
+        #echo ============== Env:
+        #printenv | sort
+        #echo ============== sudo Env:
+        #sudo printenv | sort
+        sudo bash -c 'echo "deb http://download.proxmox.com/debian/pve ${DEBIAN_RELEASE} pve-no-subscription" > /etc/apt/sources.list.d/pve-no-subscription.list' \
         #sudo -E echo "deb http://download.proxmox.com/debian/pve bullseye pve-no-subscription" >> /etc/apt/sources.list
         sudo -E apt-get update
         sudo -E apt-get install -y --no-install-recommends git nano screen patch fakeroot build-essential devscripts libncurses5 libncurses5-dev libssl-dev bc flex bison libelf-dev libaudit-dev libgtk2.0-dev libperl-dev asciidoc xmlto gnupg gnupg2 rsync lintian debhelper libdw-dev libnuma-dev libslang2-dev sphinx-common asciidoc-base automake cpio dh-python file gcc kmod libiberty-dev  libtool perl-modules python3-minimal sed tar zlib1g-dev liblz4-tool idn
