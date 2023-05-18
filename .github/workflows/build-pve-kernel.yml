@@ -33,6 +33,7 @@ jobs:
         DEBIAN_FRONTEND: noninteractive
       run: |
         #sudo swapoff /swapfile
+        printenv
         sudo rm -rf /swapfile /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
         #sudo wget -qO - http://download.proxmox.com/debian/proxmox-ve-release-6.x.gpg | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key add -
         sudo wget http://download.proxmox.com/debian/proxmox-ve-release-6.x.gpg -O /etc/apt/trusted.gpg.d/proxmox-ve-release-6.x.gpg
