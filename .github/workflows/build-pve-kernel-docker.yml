@@ -1,0 +1,66 @@
+name: Build pve-kernel
+
+on:
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+        required: false
+        default: false
+      runner:
+        type: string
+        description: 'target runner for this workflow'
+        required: false
+        default: 'ubuntu-latest'
+
+env:
+  REPO_URL: git://git.proxmox.com/git/pve-kernel.git
+  REPO_BRANCH: pve-kernel-5.15
+  DEBIAN_RELEASE: bullseye
+  UPLOAD_BIN_DIR: true
+
+jobs:
+  build:
+    runs-on: ${{ inputs.runner }}
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Initialize environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo -E apt-get update
+        sudo -E apt-get upgrade -y
+        sudo -E apt-get install -y --no-install-recommends apt-utils docker-compose docker.io git nano
+
+    - name: Prepare container
+      run: |
+        docker build --build-arg DEBIAN_RELEASE=${DEBIAN_RELEASE} --build-arg REPO_URL=${REPO_URL} \
+          --build-arg REPO_BRANCH=${REPO_BRANCH} -t pve-kernel-build .
+
+    - name: Build kernel
+      id: docker-build
+      run: |
+        docker run pve-kernel-build scripts/build-kernel.sh >> $GITHUB_OUTPUT
+        docker image tag $(docker images -q | head -1) pve-kernel-built
+
+    - name: Extract build artifacts
+      id: build-artifacts
+      run: |
+        mkdir ./release
+        docker run -v $(pwd)/release:/release pve-kernel-built scripts/export-artifacts.sh >> $GITHUB_OUTPUT
+
+    - name: Upload kernel artifacts
+      uses: actions/upload-artifact@master
+      if: steps.docker-build.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
+      with:
+        name: ${{ steps.build-artifacts.outputs.version }}
+        path: ./release
+
+    - name: Start tmate session on failure
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled && failure() }}
