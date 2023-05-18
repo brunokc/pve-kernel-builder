@@ -19,6 +19,7 @@ env:
   REPO_BRANCH: pve-kernel-5.15
   DEBIAN_RELEASE: bullseye
   UPLOAD_BIN_DIR: true
+  FREE_DISK_SPACE: false
 
 jobs:
   build:
@@ -80,6 +81,7 @@ jobs:
     #    #sed -i "s/-e CONFIG_PAGE_TABLE_ISOLATION/-e CONFIG_PAGE_TABLE_ISOLATION \\\ \n-d CONFIG_DEBUG_INFO_BTF/" debian/rules
 
     - name: Free up disk space on CI system
+      if: env.FREE_DISK_SPACE == 'true'
       run: |
         dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
         df -h
