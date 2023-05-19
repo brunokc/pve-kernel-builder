@@ -1,4 +1,4 @@
-name: Build pve-kernel
+name: Build pve-kernel (with docker)
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ on:
         type: string
         description: 'target runner for this workflow'
         required: false
-        default: 'ubuntu-latest'
+        default: 'ubuntu-22.04'
 
 env:
   REPO_URL: git://git.proxmox.com/git/pve-kernel.git
@@ -46,15 +46,15 @@ jobs:
       id: docker-build
       run: |
         docker run pve-kernel-build scripts/build-kernel.sh >> $GITHUB_OUTPUT
-        docker image tag $(docker images -q | head -1) pve-kernel-built
+        docker image tag $(docker images -q | head -1) built-kernel-image
 
     - name: Extract build artifacts
       id: build-artifacts
       run: |
         mkdir ./release
-        docker run -v $(pwd)/release:/release pve-kernel-built scripts/export-artifacts.sh >> $GITHUB_OUTPUT
+        docker run -v $(pwd)/release:/release built-kernel-image scripts/export-artifacts.sh >> $GITHUB_OUTPUT
 
-    - name: Upload kernel artifacts
+    - name: Upload build artifacts
       uses: actions/upload-artifact@master
       if: steps.docker-build.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
