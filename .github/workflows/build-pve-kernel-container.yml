@@ -36,6 +36,7 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
+        echo Disk usage: start
         df -h
         sudo -E apt-get update
         sudo -E apt-get purge -y '^dotnet-.*' '^temurin-.*-jdk' '^llvm-.*' 'php.*'
@@ -43,11 +44,13 @@ jobs:
             powershell mono-devel
         sudo -E apt-get autoremove -y
         sudo -E apt-get clean
+        echo Disk usage: after apt-get purge
         df -h
         sudo -E rm -rf /usr/share/dotnet /usr/local/lib/android /usr/local/share/powershell /usr/local/share/chromium
+        echo Disk usage: after directory removals
         df -h
-        dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
-        du -d 4 -ahx / | sort -h | tail -n 100
+        #dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
+        #du -d 4 -ahx / | sort -h | tail -n 100
 
     - name: Initialize environment
       env:
