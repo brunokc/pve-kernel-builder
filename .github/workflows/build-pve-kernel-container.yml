@@ -29,22 +29,22 @@ jobs:
     - name: Checkout
       uses: actions/checkout@master
 
-    - name: Cleanup
-      env:
-        DEBIAN_FRONTEND: noninteractive
-      run: |
-        df -h
-        sudo -E apt-get update
-        sudo -E apt-get purge -y '^dotnet-.*' '^temurin-.*-jdk' '^llvm-.*' 'php.*'
-        sudo -E apt-get purge -y google-cloud-sdk azure-cli microsoft-edge-stable google-chrome-stable firefox \
-            powershell mono-devel
-        sudo -E apt-get autoremove -y
-        sudo -E apt-get clean
-        df -h
-        sudo -E rm -rf /usr/share/dotnet /usr/local/share/powershell /usr/local/share/chromium
-        df -h
-        dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
-        du -d 4 -ahx / | sort -h | tail -n 100
+#     - name: Cleanup
+#       env:
+#         DEBIAN_FRONTEND: noninteractive
+#       run: |
+#         df -h
+#         sudo -E apt-get update
+#         sudo -E apt-get purge -y '^dotnet-.*' '^temurin-.*-jdk' '^llvm-.*' 'php.*'
+#         sudo -E apt-get purge -y google-cloud-sdk azure-cli microsoft-edge-stable google-chrome-stable firefox \
+#             powershell mono-devel
+#         sudo -E apt-get autoremove -y
+#         sudo -E apt-get clean
+#         df -h
+#         sudo -E rm -rf /usr/share/dotnet /usr/local/share/powershell /usr/local/share/chromium
+#         df -h
+#         dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
+#         du -d 4 -ahx / | sort -h | tail -n 100
 
     - name: Initialize environment
       env:
@@ -54,6 +54,11 @@ jobs:
         sudo -E apt-get install -y --no-install-recommends apt-utils git nano apt-file
         sudo -E apt-file update
         sudo -E apt-file search /usr/local/lib/android
+        sudo -E apt-file search android
+        sudo -E dpkg -S /usr/local/lib/android
+        
+    - name: Start tmate session on failure
+      uses: mxschmitt/action-tmate@v3
 
     - name: Prepare container
       run: |
