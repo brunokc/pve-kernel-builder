@@ -52,6 +52,7 @@ jobs:
       run: |
         sudo -E apt-get upgrade -y
         sudo -E apt-get install -y --no-install-recommends apt-utils git nano apt-file
+        sudo -E apt-file update
         sudo -E apt-file search /usr/local/lib/android
 
     - name: Prepare container
