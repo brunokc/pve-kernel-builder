@@ -50,7 +50,7 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        sudo -E apt-get upgrade -y
+        #sudo -E apt-get upgrade -y
         sudo -E apt-get install -y --no-install-recommends apt-utils git nano apt-file
         sudo -E apt-file update
         sudo -E apt-file search /usr/local/lib/android
@@ -59,6 +59,7 @@ jobs:
         
     - name: Start tmate session on failure
       uses: mxschmitt/action-tmate@v3
+      if: ${{ failure() }}
 
     - name: Prepare container
       run: |
