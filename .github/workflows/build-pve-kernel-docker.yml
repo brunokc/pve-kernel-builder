@@ -34,8 +34,16 @@ jobs:
         DEBIAN_FRONTEND: noninteractive
       run: |
         sudo -E apt-get update
+        sudo -E apt-get remove -y '^dotnet-.*'
+        sudo -E apt-get remove -y '^temurin-.*-jdk'
+        sudo -E apt-get remove -y '^llvm-.*'
+        sudo -E apt-get remove -y 'php.*'
+        sudo -E apt-get remove -y google-cloud-sdk azure-cli microsoft-edge-stable google-chrome-stable firefox \
+            powershell mono-devel
+        sudo -E apt-get autoremove -y
+        sudo -E apt-get clean
         sudo -E apt-get upgrade -y
-        sudo -E apt-get install -y --no-install-recommends apt-utils docker-compose docker.io git nano
+        sudo -E apt-get install -y --no-install-recommends apt-utils git nano
 
     - name: Prepare container
       run: |
