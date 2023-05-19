@@ -67,22 +67,22 @@ jobs:
     - name: Build kernel
       id: docker-build
       run: |
-        docker run pve-kernel-build scripts/build-kernel.sh
-        docker image tag $(docker images -q | head -1) built-kernel-image
+        mkdir output
+        docker run -v ${{ github.workspace }}/output:/output pve-kernel-build scripts/build-kernel.sh
         echo "status=success" >> $GITHUB_OUTPUT
 
-    - name: Extract build artifacts
-      id: build-artifacts
+    - name: Extract kernel version
+      id: kernel-version
       run: |
-        mkdir ./release
-        docker run -v $(pwd)/release:/release built-kernel-image scripts/export-artifacts.sh >> $GITHUB_OUTPUT
+        cd output
+        echo "version=$(ls abi-[0-9]* | sed 's/abi/pve-kernel/g' | sed 's/-pve//g')" >> $GITHUB_OUTPUT
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@master
       if: steps.docker-build.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
-        name: ${{ steps.build-artifacts.outputs.version }}
-        path: ./release
+        name: ${{ steps.kernel-version.outputs.version }}
+        path: ./output/artifacts
 
     - name: Start tmate session on failure
       uses: mxschmitt/action-tmate@v3
