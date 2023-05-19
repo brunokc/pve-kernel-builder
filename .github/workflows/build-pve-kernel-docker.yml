@@ -1,4 +1,4 @@
-name: Build pve-kernel (with docker)
+name: Build pve-kernel (in container)
 
 on:
   workflow_dispatch:
