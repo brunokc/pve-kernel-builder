@@ -34,10 +34,7 @@ jobs:
         DEBIAN_FRONTEND: noninteractive
       run: |
         sudo -E apt-get update
-        sudo -E apt-get remove -y '^dotnet-.*'
-        sudo -E apt-get remove -y '^temurin-.*-jdk'
-        sudo -E apt-get remove -y '^llvm-.*'
-        sudo -E apt-get remove -y 'php.*'
+        sudo -E apt-get remove -y '^dotnet-.*' '^temurin-.*-jdk' '^llvm-.*' 'php.*'
         sudo -E apt-get remove -y google-cloud-sdk azure-cli microsoft-edge-stable google-chrome-stable firefox \
             powershell mono-devel
         sudo -E apt-get autoremove -y
@@ -53,8 +50,9 @@ jobs:
     - name: Build kernel
       id: docker-build
       run: |
-        docker run pve-kernel-build scripts/build-kernel.sh >> $GITHUB_OUTPUT
+        docker run pve-kernel-build scripts/build-kernel.sh
         docker image tag $(docker images -q | head -1) built-kernel-image
+        echo "status=success" >> $GITHUB_OUTPUT
 
     - name: Extract build artifacts
       id: build-artifacts
