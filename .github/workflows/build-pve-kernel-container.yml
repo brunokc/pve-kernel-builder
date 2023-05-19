@@ -3,15 +3,18 @@ name: Build pve-kernel (in container)
 on:
   workflow_dispatch:
     inputs:
-      debug_enabled:
+      tmate_debug_enabled:
         type: boolean
         description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
         required: false
         default: false
       runner:
-        type: string
         description: 'target runner for this workflow'
-        required: false
+        required: true
+        type: choice
+        options:
+          - ubuntu-22.04
+          - self-hosted
         default: 'ubuntu-22.04'
 
 env:
@@ -80,4 +83,4 @@ jobs:
 
     - name: Start tmate session on failure
       uses: mxschmitt/action-tmate@v3
-      if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled && failure() }}
+      if: ${{ github.event_name == 'workflow_dispatch' && inputs.tmate_debug_enabled && failure() }}
