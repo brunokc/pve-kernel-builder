@@ -1,4 +1,4 @@
-# 🍻 Relaxed RMRR Mapping for Linux 3.17+
+# 🍻 Relaxed RMRR Mapping for Linux 5.15+
 ## 🐧💨 Now you can use PCI passthrough on broken platforms
 
 ### TL;DR
@@ -8,9 +8,10 @@ vfio-pci 0000:01:00.1: Device is ineligible for IOMMU domain attach due to platf
 ```
 followed by `vfio: failed to set iommu for container: Operation not permitted`.
 
-This kernel patch fixes the problem **on kernels v3.17 and up** (tested up to 5.9.1). You can skip to "[Installation](README.md#installation)" 
-section if you don't care about the rest. Reading of "[Disclaimers](README.md#disclaimers)" section to understand the 
-risks, and "[Solutions & hacks](deep-dive.md#other-solutions--hacks)" to get the idea of different alternatives is 
+This kernel patch fixes the problem **on kernels v5.15 and up** (tested up to 5.15.107). You can skip to 
+"[Installation](README.md#installation)" section if you don't care about the rest. Reading of 
+"[Disclaimers](README.md#disclaimers)" section to understand the risks, and 
+"[Solutions & hacks](deep-dive.md#other-solutions--hacks)" to get the idea of different alternatives is 
 highly recommended.
 
 ---
@@ -81,13 +82,16 @@ If you're running a version of Proxmox with [no packages available](README.md#pr
 ---
 
 ### Configuration
+
 By default, after the kernel is installed, the patch will be *inactive* (i.e. the kernel will behave like this patch was
-never applied). To activate it you have to add `intel_iommu=relax_rmrr` to your Linux boot args.
+never applied). To activate it you have to add `relax_rmrr` to the `intel_iommu` option on your Linux boot args.
 
 In most distros (including Proxmox) you do this by:
+
 1. Opening `/etc/default/grub` (e.g. using `nano /etc/default/grub`)
 2. Editing the `GRUB_CMDLINE_LINUX_DEFAULT` to include the option:
-    - Example of old line:   
+
+    - Example of old line:
         ```
         GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on iommu=pt intremap=no_x2apic_optout"
         ```
