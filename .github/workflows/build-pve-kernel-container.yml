@@ -29,16 +29,27 @@ jobs:
     - name: Checkout
       uses: actions/checkout@master
 
-    - name: Initialize environment
+    - name: Cleanup
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
+        df -h
         sudo -E apt-get update
         sudo -E apt-get remove -y '^dotnet-.*' '^temurin-.*-jdk' '^llvm-.*' 'php.*'
         sudo -E apt-get remove -y google-cloud-sdk azure-cli microsoft-edge-stable google-chrome-stable firefox \
             powershell mono-devel
         sudo -E apt-get autoremove -y
         sudo -E apt-get clean
+        df -h
+        rm -rf /usr/share/dotnet
+        df -h
+        dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
+        du -d 4 -ah / | sort -h | tail -n 100
+
+    - name: Initialize environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
         sudo -E apt-get upgrade -y
         sudo -E apt-get install -y --no-install-recommends apt-utils git nano
 
