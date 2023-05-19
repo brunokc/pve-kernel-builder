@@ -2,7 +2,7 @@
 # This Dockerfile builds the newest kernel with the RMRR patch
 #
 ARG DEBIAN_RELEASE=bullseye
-FROM debian:${DEBIAN_RELEASE}-slim
+FROM debian:${DEBIAN_RELEASE}
 
 ARG DEBIAN_RELEASE
 ARG REPO_URL=git://git.proxmox.com/git/pve-kernel.git
@@ -35,7 +35,6 @@ RUN set -x \
 RUN mkdir -p /build
 WORKDIR /build
 COPY patches patches
-COPY scripts scripts
 
 # Clone pve kernel repo
 RUN set -x \
@@ -46,3 +45,18 @@ RUN set -x \
   && cp patches/kernel/*.patch pve-kernel/patches/kernel \
   && cd pve-kernel \
   && for patch in ../patches/*.patch; do if [ -f $patch ]; then echo "Applying patch '$patch'" && patch -p1 < ${patch}; fi; done
+
+# Build kernel
+RUN set -x \
+  && cd pve-kernel \
+  && echo -e "$(nproc) thread compile" \
+  #&& make -j$(nproc) || make -j1 V=s
+  && make
+
+# Copy build artifacts
+RUN set -x \
+  && cd pve-kernel \
+  && mkdir release \
+  && cp *.deb release/ \
+  #&& cp *.ddeb release/ \
+  && echo "version=$(ls abi-prev* | sed 's/abi-prev/pve-kernel/g' | sed 's/-pve//g')" >> $GITHUB_OUTPUT
