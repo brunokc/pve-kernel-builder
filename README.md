@@ -1,9 +1,32 @@
 # PVE Kernel Builder
 
+Latest from [Proxmox](https://git.proxmox.com/):
+<img src="https://img.shields.io/badge/dynamic/yaml?color=informational&label=proxmox&query=version.proxmox&url=https%3A%2F%2Fraw.githubusercontent.com%2Fbrunokc%2Frelax-intel-rmrr%2Fmaster%2Fconfig%2Fmaster%2Fversion">&nbsp;<img src="https://img.shields.io/badge/dynamic/yaml?color=informational&label=kernel&query=version.kernel&url=https%3A%2F%2Fraw.githubusercontent.com%2Fbrunokc%2Frelax-intel-rmrr%2Fmaster%2Fconfig%2Fmaster%2Fversion">&nbsp;<img src="https://img.shields.io/badge/dynamic/yaml?color=informational&label=kernel&query=version.kernel&url=https%3A%2F%2Fraw.githubusercontent.com%2Fbrunokc%2Frelax-intel-rmrr%2Fmaster%2Fconfig%2Fpve-kernel-5.15%2Fversion">  
+Latest kernel [releases](https://github.com/brunokc/pve-kernel-builder/releases):
+
+---
+
+<!--
+<table>
+  <tr>
+    <td>proxmox</td>
+    <td><img src="https://img.shields.io/badge/dynamic/yaml?color=informational&label=proxmox&query=version.proxmox&url=https%3A%2F%2Fraw.githubusercontent.com%2Fbrunokc%2Frelax-intel-rmrr%2Fmaster%2Fconfig%2Fmaster%2Fversion"></td>
+  </tr>
+  <tr>
+    <td>master</td>
+    <td><img src="https://img.shields.io/badge/dynamic/yaml?color=informational&label=kernel&query=version.kernel&url=https%3A%2F%2Fraw.githubusercontent.com%2Fbrunokc%2Frelax-intel-rmrr%2Fmaster%2Fconfig%2Fmaster%2Fversion"></td>
+  </tr>
+  <tr>
+    <td>5.15</td>
+    <td><img src="https://img.shields.io/badge/dynamic/yaml?color=informational&label=kernel&query=version.kernel&url=https%3A%2F%2Fraw.githubusercontent.com%2Fbrunokc%2Frelax-intel-rmrr%2Fmaster%2Fconfig%2Fpve-kernel-5.15%2Fversion"></td>
+  </tr>
+</table>
+-->
+
 This project aims to provide an easy way to build kernels for Proxmox VE 
 with a particular set of patches. 
 
-At the moment, the patches applied are:
+At the moment, these are the patches applied during build:
 
 * [Relax Intel RMRR](https://github.com/kiler129/relax-intel-rmrr): relax 
 RMRRs on Intel platforms to allow certain PCIe devices to be passed through
@@ -14,19 +37,25 @@ message.
 
 ## How to Build
 
-Two options:
+There are two options:
 
-1. Trigger the [Build pve kernel (in container)]
-(https://github.com/brunokc/pve-kernel-builder/actions/workflows/build-pve-kernel-container.yml) workflow.
+1. Trigger the [Build pve kernel (in container)](https://github.com/brunokc/pve-kernel-builder/actions/workflows/build-pve-kernel-container.yml) 
+workflow.
 
-This workflow will build a new kernel with the current set of patches applied 
-and produce artifacts that can be downloaded. This will run on a 2-core VM
-in GitHub and it will take about 2h30m to complete.
+   This workflow will build a new kernel with the current set of patches applied 
+   and produce artifacts that can be downloaded. It will run on a 2-core VM in 
+   GitHub and it will take between 2h30m and 3h to complete.
 
 2. Build it locally
 
-Use the build.sh script to build the kernel locally with the current set of 
-patches applied. Because you are building everything locally, you can customize
-the set of patches you want before building.
+   Use the build.sh script to build the kernel locally with the current set of 
+   patches applied. Because you are building everything locally, you can customize
+   the set of patches you want before building.
 
+In all cases, kernel builds are done using docker to contain the dependencies
+and make cleanup easier.
 
+## Acknowledgements
+
+* [kiler129](https://github.com/kiler129/relax-intel-rmrr): provider of the Relax Intel RMRR patch. Kiler129 provides lots of good info on the [why and how the patch works](https://github.com/kiler129/relax-intel-rmrr/blob/master/deep-dive.md).
+* [roforest](https://github.com/roforest/Actions-pve-kernel): provides the basis for the GitHub workflows implemented here.
