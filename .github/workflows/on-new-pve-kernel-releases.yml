@@ -35,7 +35,7 @@ jobs:
         config_path='${{ github.workspace }}/config/${{ matrix.branch }}/version'
         cur_ver=""
         if [[ -e ${config_path} ]]; then
-            cur_ver=`cat ${config_path}`
+            cur_ver=`yq .version.kernel ${config_path}`
         fi
         echo "Current cached kernel version for branch ${{ matrix.branch }}: ${cur_ver}"
         proxmox_ver=`curl -s "https://git.proxmox.com/?p=pve-kernel-meta.git;a=shortlog;h=refs/heads/master" | \
