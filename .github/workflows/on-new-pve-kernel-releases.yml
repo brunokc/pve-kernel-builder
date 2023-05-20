@@ -14,6 +14,8 @@ jobs:
       matrix:
         branch: ['master', 'pve-kernel-5.15']
     #if: github.event.repository.owner.id == github.event.sender.id
+    permissions:
+      contents: write
 
     steps:
     - name: Checkout Sources
