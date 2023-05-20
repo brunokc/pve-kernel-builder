@@ -30,13 +30,14 @@ jobs:
         sudo -E apt install -y curl
 
     - name: Check for updates
-      id: update
+      id: check-version
       run: |
         config_path='${{ github.workspace }}/config/${{ matrix.branch }}/version'
         cur_ver=""
         if [[ -e ${config_path} ]]; then
             cur_ver=`cat ${config_path}`
         fi
+        echo "Current cached kernel version for branch ${{ matrix.branch }}: ${cur_ver}"
         url="https://git.proxmox.com/?p=pve-kernel.git;a=shortlog;h=refs/heads/${{ matrix.branch }}"
         payload=`wget $url -qO shortlog.html`
         ver=`grep -oP "bump version to \K[^<,]+" shortlog.html | head -n 1`
@@ -46,7 +47,7 @@ jobs:
             echo "Kernel version ${kernel_ver} for branch ${{ matrix.branch }} is up to date. Nothing to do."
             echo "status=up-to-date" >> $GITHUB_OUTPUT
         else
-            echo "New kernel version avaiable for branch ${{ matrix.branch }}: ${kernel_ver}."
+            echo "New kernel version avaiable for branch ${{ matrix.branch }}: ${kernel_ver}. Wil update repository."
             mkdir -p `dirname ${config_path}`
             sudo echo ${kernel_ver} > ${config_path}
             echo "version=${kernel_ver}" >> $GITHUB_OUTPUT
@@ -56,7 +57,7 @@ jobs:
 
     - name: Commit and Push changes
       continue-on-error: true
-      if: steps.update.outputs.status == 'needs-update'
+      if: steps.check-version.outputs.status == 'needs-update'
       run: |
         git config --local user.email "1355373+brunokc@users.noreply.github.com"
         git config --local user.name "Bruno Kraychete da Costa"
