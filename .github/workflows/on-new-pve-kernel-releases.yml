@@ -32,7 +32,7 @@ jobs:
       id: update
       run: |
         config_path='${{ github.workspace }}/config/${{ matrix.branch }}/version'
-        cur_ver=`cat ${config_path}`
+        cur_ver=`[ -e ${config_path} ] && cat ${config_path}`
         url="https://git.proxmox.com/?p=pve-kernel.git;a=shortlog;h=refs/heads/${{ matrix.branch }}"
         payload=`wget $url -qO shortlog.html`
         ver=`grep -oP "bump version to \K[^<,]+" shortlog.html | head -n 1`
