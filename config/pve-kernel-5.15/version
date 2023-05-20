@@ -1,1 +1,3 @@
-version: pve-kernel-5.15.107-2-pve-5.15.107-2
+version:
+  proxmox: 8.0.0
+  kernel: 5.15.107-2-pve
