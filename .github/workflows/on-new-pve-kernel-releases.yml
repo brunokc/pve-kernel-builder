@@ -1,16 +1,19 @@
-name: Update kernel version on new pve-kernel releases
+name: Check version on new pve-kernel releases
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 2 * * *' # Every day
+    - cron: '45 2 * * *' # Every day at 2:45AM UTC
+
+env:
+  DEBIAN_FRONTEND: noninteractive
 
 jobs:
   check:
     name: Check for new release
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 1
+      #max-parallel: 1
       matrix:
         branch: ['master', 'pve-kernel-5.15']
     #if: github.event.repository.owner.id == github.event.sender.id
@@ -20,12 +23,8 @@ jobs:
     steps:
     - name: Checkout Sources
       uses: actions/checkout@main
-#       with:
-#         token: ${{ secrets.REPO_TOKEN }}
 
     - name: Initialization environment
-      env:
-        DEBIAN_FRONTEND: noninteractive
       run: |
         sudo -E apt-get update
         sudo -E apt install -y curl
@@ -44,22 +43,24 @@ jobs:
         abi_ver=`grep -oP "update ABI file for \K[^<,]+" shortlog.html | head -n 1`
         kernel_ver="pve-kernel-${abi_ver}-${ver}"
         if [[ ${kernel_ver} == ${cur_ver} ]]; then
+            echo "Kernel version ${kernel_ver} for branch ${{ matrix.branch }} is up to date. Nothing to do."
             echo "status=up-to-date" >> $GITHUB_OUTPUT
         else
+            echo "New kernel version avaiable for branch ${{ matrix.branch }}: ${kernel_ver}."
             mkdir -p `dirname ${config_path}`
             sudo echo ${kernel_ver} > ${config_path}
             echo "version=${kernel_ver}" >> $GITHUB_OUTPUT
-            echo "status=success" >> $GITHUB_OUTPUT
+            echo "status=needs-update" >> $GITHUB_OUTPUT
         fi
         rm -f shortlog.html
 
     - name: Commit and Push changes
       continue-on-error: true
-      if: steps.update.outputs.status == 'success'
+      if: steps.update.outputs.status == 'needs-update'
       run: |
         git config --local user.email "1355373+brunokc@users.noreply.github.com"
         git config --local user.name "Bruno Kraychete da Costa"
         git pull
         git add config/**
-        git commit -m '${{ steps.update.outputs.version }}'
+        git commit -m 'Update version to ${{ steps.update.outputs.version }}'
         git push
