@@ -1,0 +1,57 @@
+name: Update kernel version on new pve-kernel releases
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *' # Every day
+
+jobs:
+  check:
+    name: Check for new release
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      matrix:
+        branch: ['master', 'pve-kernel-5.15']
+    #if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+    - name: Checkout Sources
+      uses: actions/checkout@main
+      with:
+        token: ${{ secrets.REPO_TOKEN }}
+
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo -E apt-get update
+        sudo -E apt install -y curl
+
+    - name: Check for updates
+      id: update
+      run: |
+        config_path='${{ github.workspace }}/config/${{ matrix.branch }}/version'
+        cur_ver=`cat ${config_path}`
+        url="https://git.proxmox.com/?p=pve-kernel.git;a=shortlog;h=refs/heads/${{ matrix.branch }}"
+        payload=`wget $url -qO shortlog.html`
+        ver=`grep -oP "bump version to \K[^<,]+" shortlog.html | head -n 1`
+        abi_ver=`grep -oP "update ABI file for \K[^<,]+" shortlog.html | head -n 1`
+        kernel_ver="pve-kernel-${abi_ver}-${ver}"
+        if [[ ${kernel_ver} == ${cur_ver} ]]; then
+            echo "status=up-to-date" >> $GITHUB_OUTPUT
+        else
+            sudo echo ${kernel_ver} > $config_path
+            echo "version=${kernel_ver}" >> $GITHUB_OUTPUT
+            echo "status=success" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Commit and Push changes
+      continue-on-error: true
+      if: steps.update.outputs.status == 'success'
+      run: |
+        git config --local user.email "1355373+brunokc@users.noreply.github.com"
+        git config --local user.name "Bruno Kraychete da Costa"
+        git pull
+        git commit -a -m '${{ steps.update.outputs.version }}'
+        git push
