@@ -34,7 +34,7 @@ jobs:
         config_path='${{ github.workspace }}/config/${{ matrix.branch }}/version'
         cur_ver=""
         if [[ -e ${config_path} ]]; then
-          cur_ver=`cat ${config_path}`
+            cur_ver=`cat ${config_path}`
         fi
         url="https://git.proxmox.com/?p=pve-kernel.git;a=shortlog;h=refs/heads/${{ matrix.branch }}"
         payload=`wget $url -qO shortlog.html`
@@ -44,7 +44,8 @@ jobs:
         if [[ ${kernel_ver} == ${cur_ver} ]]; then
             echo "status=up-to-date" >> $GITHUB_OUTPUT
         else
-            sudo echo ${kernel_ver} > $config_path
+            mkdir -p `dirname ${config_path}`
+            sudo echo ${kernel_ver} > ${config_path}
             echo "version=${kernel_ver}" >> $GITHUB_OUTPUT
             echo "status=success" >> $GITHUB_OUTPUT
         fi
