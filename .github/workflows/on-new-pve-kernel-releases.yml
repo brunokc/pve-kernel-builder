@@ -38,6 +38,8 @@ jobs:
             cur_ver=`cat ${config_path}`
         fi
         echo "Current cached kernel version for branch ${{ matrix.branch }}: ${cur_ver}"
+        proxmox_ver=`curl -s "https://git.proxmox.com/?p=pve-kernel-meta.git;a=shortlog;h=refs/heads/master" | \
+            grep -oP "bump version to \K[^<]*" | head -n 1`
         url="https://git.proxmox.com/?p=pve-kernel.git;a=shortlog;h=refs/heads/${{ matrix.branch }}"
         payload=`wget $url -qO shortlog.html`
         ver=`grep -oP "bump version to \K[^<,]+" shortlog.html | head -n 1`
@@ -47,9 +49,9 @@ jobs:
             echo "Kernel version ${kernel_ver} for branch ${{ matrix.branch }} is up to date. Nothing to do."
             echo "status=up-to-date" >> $GITHUB_OUTPUT
         else
-            echo "New kernel version avaiable for branch ${{ matrix.branch }}: ${kernel_ver}. Wil update repository."
+            echo "New kernel version avaiable for branch ${{ matrix.branch }}: ${kernel_ver}. Will update repository."
             mkdir -p `dirname ${config_path}`
-            sudo echo ${kernel_ver} > ${config_path}
+            sudo echo -e "version:\n  proxmox: ${proxmox_ver}\n  kernel: ${abi_ver}" > ${config_path}
             echo "version=${kernel_ver}" >> $GITHUB_OUTPUT
             echo "status=needs-update" >> $GITHUB_OUTPUT
         fi
