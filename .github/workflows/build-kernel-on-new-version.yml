@@ -22,7 +22,7 @@ jobs:
 
       - name: Extract branch affected
         run: |
-          echo "event: ${{ github.event }} | jq"
+          echo "event: ${{ toJSON(github.event) }}"
 
 #      - name: Run build kernel workflow
 #        uses: ./.github/workflows/build-pve-kernel-container.yml
