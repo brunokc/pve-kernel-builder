@@ -1,0 +1,31 @@
+name: Build kernel on new version
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'config/**/version'
+
+env:
+  DEBIAN_FRONTEND: noninteractive
+
+jobs:
+  build:
+    name: Build new kernel
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Sources
+        uses: actions/checkout@main
+
+      - name: Extract branch affected
+        run: |
+          echo "event: ${{ github.event }} | jq"
+
+#      - name: Run build kernel workflow
+#        uses: ./.github/workflows/build-pve-kernel-container.yml
+#        with:
+#          branch: ${{ github.event.branch}
+
