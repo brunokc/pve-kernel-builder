@@ -21,21 +21,10 @@ jobs:
         uses: actions/checkout@main
 
       - name: Extract branch affected
-        run: |
-          event="${{ toJSON(github.event) }}"
-          for commit in `echo $event | yq '.event.commits[] as $c | $c.id'`; do
-              echo "Commit: $commit"
-              affected_files=$(git log --format= --name-status -n 1 $c | cut -f 2)
-              for file in $affected_files; do
-                  echo "analyzing $file"
-                  if [[ $file = "config/*" ]]; then
-                      echo "$file is a config file"
-                  fi
-              done
-          done
+        id: proxmox-branch
+        run: ./scripts/extract_proxmox_branch.sh >> $GITHUB_OUTPUT
 
-#      - name: Run build kernel workflow
-#        uses: ./.github/workflows/build-pve-kernel-container.yml
-#        with:
-#          branch: ${{ github.event.branch}
-
+      - name: Run build kernel workflow
+        uses: ./.github/workflows/build-pve-kernel-container.yml
+        with:
+          branch: ${{ steps.proxmox-branch.outputs.branch }}
