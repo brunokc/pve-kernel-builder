@@ -23,7 +23,7 @@ jobs:
       - name: Extract branch affected
         id: proxmox-branch
         run: |
-          branch=`./scripts/extract_proxmox_branch.sh`
+          branch=`echo ${{ toJSON(github.event) }} | ./scripts/extract_proxmox_branch.sh`
           echo "Proxmox branch: ${branch}"
           echo "branch=${branch}" >> $GITHUB_OUTPUT
 
