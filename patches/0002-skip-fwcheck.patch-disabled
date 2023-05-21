@@ -1,0 +1,11 @@
+--- debian/rules.orig
++++ debian/rules
+@@ -110,7 +110,7 @@
+ 	dh_fixperms
+ 
+ binary: install
+-	debian/rules fwcheck abicheck
++	debian/rules abicheck
+ 	dh_strip -N${PVE_HEADER_PKG} -N${PVE_USR_HEADER_PKG}
+ 	dh_makeshlibs
+ 	dh_shlibdeps
