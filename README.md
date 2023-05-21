@@ -1,5 +1,6 @@
 # PVE Kernel Builder
 
+[![Check version on new pve-kernel releases](https://github.com/brunokc/relax-intel-rmrr/workflows/Check%20version%20on%20new%20pve-kernel%20releases/badge.svg)](https://github.com/brunokc/relax-intel-rmrr/actions?query=workflow%3A%22Check+version+on+new+pve-kernel+releases%22)  
 Latest from [Proxmox](https://git.proxmox.com/):
 <img src="https://img.shields.io/badge/dynamic/yaml?color=informational&label=proxmox&query=version.proxmox&url=https%3A%2F%2Fraw.githubusercontent.com%2Fbrunokc%2Frelax-intel-rmrr%2Fmaster%2Fconfig%2Fmaster%2Fversion">&nbsp;<img src="https://img.shields.io/badge/dynamic/yaml?color=informational&label=kernel&query=version.kernel&url=https%3A%2F%2Fraw.githubusercontent.com%2Fbrunokc%2Frelax-intel-rmrr%2Fmaster%2Fconfig%2Fmaster%2Fversion">&nbsp;<img src="https://img.shields.io/badge/dynamic/yaml?color=informational&label=kernel&query=version.kernel&url=https%3A%2F%2Fraw.githubusercontent.com%2Fbrunokc%2Frelax-intel-rmrr%2Fmaster%2Fconfig%2Fpve-kernel-5.15%2Fversion">  
 Latest kernel [releases](https://github.com/brunokc/pve-kernel-builder/releases):
