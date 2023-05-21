@@ -1,3 +1,3 @@
 version:
-  proxmox: 8.0.0
+  proxmox: 7.4
   kernel: 5.15.107-2-pve
