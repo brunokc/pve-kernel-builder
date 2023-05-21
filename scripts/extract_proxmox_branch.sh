@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -x
+
 echoerr() {
     printf "%s\n" "$*" >&2
 }
