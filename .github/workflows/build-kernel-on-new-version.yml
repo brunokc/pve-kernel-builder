@@ -12,7 +12,7 @@ env:
   DEBIAN_FRONTEND: noninteractive
 
 jobs:
-  brach-from-commit:
+  branch-from-commit:
     name: Build new kernel
     runs-on: ubuntu-latest
 
