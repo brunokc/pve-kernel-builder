@@ -28,5 +28,5 @@ jobs:
     name: Run build kernel workflow
     needs: branch-from-commit
     uses: ./.github/workflows/build-pve-kernel-container.yml
-      with:
-        branch: ${{ needs.branch-from-commit.outputs.branch }}
+    with:
+      branch: ${{ needs.branch-from-commit.outputs.branch }}
