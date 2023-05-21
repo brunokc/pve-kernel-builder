@@ -1,0 +1,89 @@
+name: Build pve-kernel (in container)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tmate_debug_enabled:
+        type: boolean
+        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+        required: false
+        default: false
+      runner:
+        description: 'target runner for this workflow'
+        required: true
+        type: choice
+        options:
+          - ubuntu-22.04
+          - self-hosted
+        default: 'ubuntu-22.04'
+
+env:
+  REPO_URL: git://git.proxmox.com/git/pve-kernel.git
+  REPO_BRANCH: pve-kernel-5.15
+  DEBIAN_RELEASE: bullseye
+  UPLOAD_BIN_DIR: true
+
+jobs:
+  build:
+    runs-on: ${{ inputs.runner }}
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Cleanup
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        echo Disk usage: start
+        df -h
+        sudo -E apt-get update
+        sudo -E apt-get purge -y '^dotnet-.*' '^temurin-.*-jdk' '^llvm-.*' 'php.*'
+        sudo -E apt-get purge -y google-cloud-sdk azure-cli microsoft-edge-stable google-chrome-stable firefox \
+            powershell mono-devel
+        sudo -E apt-get autoremove -y
+        sudo -E apt-get clean
+        echo Disk usage: after apt-get purge
+        df -h
+        sudo -E rm -rf /usr/share/dotnet /usr/local/lib/android /usr/local/share/powershell /usr/local/share/chromium
+        echo Disk usage: after directory removals
+        df -h
+        #dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
+        #du -d 4 -ahx / | sort -h | tail -n 100
+
+    - name: Initialize environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo -E apt-get upgrade -y
+        sudo -E apt-get install -y --no-install-recommends apt-utils git nano
+
+    - name: Prepare container
+      run: |
+        docker build --build-arg DEBIAN_RELEASE=${DEBIAN_RELEASE} --build-arg REPO_URL=${REPO_URL} \
+          --build-arg REPO_BRANCH=${REPO_BRANCH} -t pve-kernel-build .
+
+    - name: Build kernel
+      id: docker-build
+      run: |
+        mkdir output
+        docker run -v ${{ github.workspace }}/output:/output pve-kernel-build scripts/build-kernel.sh
+        echo "status=success" >> $GITHUB_OUTPUT
+
+    - name: Extract kernel version
+      id: kernel-version
+      run: |
+        cd output
+        echo "version=$(ls abi-[0-9]* | sed 's/abi/pve-kernel/g' | sed 's/-pve//g')" >> $GITHUB_OUTPUT
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@master
+      if: steps.docker-build.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
+      with:
+        name: ${{ steps.kernel-version.outputs.version }}
+        path: ./output/artifacts
+
+    - name: Start tmate session on failure
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ github.event_name == 'workflow_dispatch' && inputs.tmate_debug_enabled && failure() }}
