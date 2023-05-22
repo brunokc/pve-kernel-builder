@@ -13,7 +13,7 @@ jobs:
     name: Check for new release
     runs-on: ubuntu-latest
     outputs:
-      build-new-kernel: ${{ steps.check-version.output.status == 'needs-update' }}
+      build-new-kernel: ${{ steps.check-version.outputs.status == 'needs-update' }}
       branch: ${{ matrix.branch }}
     strategy:
       #max-parallel: 1
