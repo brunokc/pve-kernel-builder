@@ -17,4 +17,5 @@ jobs:
     uses: ./.github/workflows/on-new-pve-kernel-releases.yml
     with:
       branch: ${{ matrix.branch }}
-    secrets: inherit
+    permissions:
+      contents: write
