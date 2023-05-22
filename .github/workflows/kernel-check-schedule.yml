@@ -10,10 +10,11 @@ env:
 
 jobs:
   check-for-new-kernel:
-    name: Check for new release
+    name: Check for new release for each branch
     strategy:
       matrix:
         branch: ['master', 'pve-kernel-5.15']
     uses: ./.github/workflows/on-new-pve-kernel-releases.yml
     with:
       branch: ${{ matrix.branch }}
+    secrets: inherit
