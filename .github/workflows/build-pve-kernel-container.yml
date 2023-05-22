@@ -9,27 +9,42 @@ on:
         required: false
         default: false
       runner:
-        description: 'target runner for this workflow'
+        description: 'Target runner for this workflow'
         required: true
         type: choice
         options:
           - ubuntu-22.04
           - self-hosted
         default: 'ubuntu-22.04'
-      repo:
+      repo-url:
+        description: 'URL for the Proxmox kernel repository'
         required: false
         type: string
         default: 'git://git.proxmox.com/git/pve-kernel.git'
       branch:
+        description: 'Branch to build'
         required: true
         type: string
+
   workflow_call:
     inputs:
+      tmate_debug_enabled:
+        type: boolean
+        description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+        required: false
+        default: false
+      runner:
+        description: 'Target runner for this workflow'
+        required: true
+        type: string
+        default: 'ubuntu-22.04'
       repo-url:
+        description: 'URL for the Proxmox kernel repository'
         required: false
         type: string
         default: 'git://git.proxmox.com/git/pve-kernel.git'
       branch:
+        description: 'Branch to build'
         required: true
         type: string
 
