@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       build-new-kernel: ${{ steps.check-version.output.status == 'needs-update' }}
+      branch: ${{ matrix.branch }}
     strategy:
       #max-parallel: 1
       matrix:
@@ -39,7 +40,7 @@ jobs:
         if [[ -e ${config_path} ]]; then
             cur_abi_ver=`yq .version.kernel ${config_path}`
         fi
-        echo "Current cached kernel version for branch ${{ matrix.branch }}: ${cur_ver}"
+        echo "Current cached kernel version for branch ${{ matrix.branch }}: ${cur_abi_ver}"
         proxmox_ver=`curl -s "https://git.proxmox.com/?p=pve-kernel-meta.git;a=shortlog;h=refs/heads/master" | \
             grep -oP "bump version to \K[^<]*" | head -n 1`
         url="https://git.proxmox.com/?p=pve-kernel.git;a=shortlog;h=refs/heads/${{ matrix.branch }}"
@@ -76,4 +77,4 @@ jobs:
     if: needs.check-for-new-kernel.outputs.build-new-kernel == 'true'
     uses: ./.github/workflows/build-pve-kernel-container.yml
     with:
-      branch: ${{ matrix.branch }}
+      branch: ${{ needs.check-for-new-kernel.outputs.branch }}
