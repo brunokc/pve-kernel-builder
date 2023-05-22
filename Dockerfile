@@ -32,7 +32,6 @@ RUN set -x \
   && apt-get autoremove --purge \
   && apt-get clean
 
-RUN mkdir -p /build
 WORKDIR /build
 COPY patches patches
 COPY scripts scripts
@@ -46,6 +45,6 @@ RUN set -x \
   && cp patches/kernel/*.patch pve-kernel/patches/kernel \
   && cd pve-kernel \
   && mkdir build-patches \
-  && cp ../patches/*.patch build-patches \
-  && cp ../patches/$REPO_BRANCH/*.patch build-patches \
+  && cp ../patches/build/*.patch build-patches \
+  && cp ../patches/build/$REPO_BRANCH/*.patch build-patches \
   && for patch in build-patches/*.patch; do if [ -f $patch ]; then echo "Applying patch '$patch'" && patch -p1 < ${patch}; fi; done
