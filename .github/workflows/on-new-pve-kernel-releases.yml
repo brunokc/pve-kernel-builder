@@ -47,7 +47,7 @@ jobs:
         payload=`wget $url -qO shortlog.html`
         ver=`grep -oP "bump version to \K[^<,]+" shortlog.html | head -n 1`
         abi_ver=`grep -oP "update ABI file for \K[^<,]+" shortlog.html | head -n 1`
-        kernel_ver="pve-kernel-${abi_ver}-${ver}"
+        #kernel_ver="pve-kernel-${abi_ver}-${ver}"
         if [[ ${abi_ver} == ${cur_abi_ver} ]]; then
             echo "Kernel ABI version ${abi_ver} for branch ${{ matrix.branch }} is up to date. Nothing to do."
             echo "status=up-to-date" >> $GITHUB_OUTPUT
@@ -55,7 +55,7 @@ jobs:
             echo "New kernel ABI version avaiable for branch ${{ matrix.branch }}: ${abi_ver}. Will update repository."
             mkdir -p `dirname ${config_path}`
             sudo echo -e "version:\n  proxmox: ${proxmox_ver}\n  kernel: ${abi_ver}" > ${config_path}
-            echo "version=${kernel_ver}" >> $GITHUB_OUTPUT
+            echo "version=${abi_ver}" >> $GITHUB_OUTPUT
             echo "status=needs-update" >> $GITHUB_OUTPUT
         fi
         rm -f shortlog.html
