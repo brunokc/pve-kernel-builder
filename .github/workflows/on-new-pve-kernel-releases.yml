@@ -71,13 +71,19 @@ jobs:
         git commit -m 'Update version to ${{ steps.check-version.outputs.version }}'
         git push
 
-  invoke-build-kernel:
-    name: Call build kernel workflow
-    needs: check-for-new-kernel
-    if: needs.check-for-new-kernel.outputs.build-new-kernel == 'true'
-    uses: ./.github/workflows/build-pve-kernel-container.yml
-    with:
-      branch: ${{ needs.check-for-new-kernel.outputs.branch }}
+    - name: Call build kernel workflow
+      if: steps.check-version.outputs.status == 'needs-update'
+      uses: ./.github/workflows/build-pve-kernel-container.yml
+      with:
+        branch: ${{ matrix.branch }}
+
+#   invoke-build-kernel:
+#     name: Call build kernel workflow
+#     needs: check-for-new-kernel
+#     if: needs.check-for-new-kernel.outputs.build-new-kernel == 'true'
+#     uses: ./.github/workflows/build-pve-kernel-container.yml
+#     with:
+#       branch: ${{ needs.check-for-new-kernel.outputs.branch }}
 #    runs-on: ubuntu-latest
 #    steps:
 #      - name: Check parameters
