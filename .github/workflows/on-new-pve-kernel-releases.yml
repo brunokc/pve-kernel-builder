@@ -72,9 +72,12 @@ jobs:
         git push
 
   invoke-build-kernel:
-    name: Run build kernel workflow
+    name: Call build kernel workflow
     needs: check-for-new-kernel
-    if: needs.check-for-new-kernel.outputs.build-new-kernel == 'true'
-    uses: ./.github/workflows/build-pve-kernel-container.yml
-    with:
-      branch: ${{ needs.check-for-new-kernel.outputs.branch }}
+    run: |
+      echo "build-new: ${{ needs.check-for-new-kernel.outputs.build-new-kernel }}"
+      echo "branch: ${{ needs.check-for-new-kernel.outputs.branch }}"
+    #if: needs.check-for-new-kernel.outputs.build-new-kernel == 'true'
+    #uses: ./.github/workflows/build-pve-kernel-container.yml
+    #with:
+    #  branch: ${{ needs.check-for-new-kernel.outputs.branch }}
