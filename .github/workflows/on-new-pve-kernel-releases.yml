@@ -78,9 +78,3 @@ jobs:
     uses: ./.github/workflows/build-pve-kernel-container.yml
     with:
       branch: ${{ needs.check-for-new-kernel.outputs.branch }}
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Check parameters
-#        run: |
-#          echo "build-new-kernel: ${{ needs.check-for-new-kernel.outputs.build-new-kernel }}"
-#          echo "branch: ${{ needs.check-for-new-kernel.outputs.branch }}"
