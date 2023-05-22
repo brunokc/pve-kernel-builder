@@ -74,13 +74,13 @@ jobs:
   invoke-build-kernel:
     name: Call build kernel workflow
     needs: check-for-new-kernel
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check parameters
-        run: |
-          echo "build-new: ${{ needs.check-for-new-kernel.outputs.build-new-kernel }}"
-          echo "branch: ${{ needs.check-for-new-kernel.outputs.branch }}"
-    #if: needs.check-for-new-kernel.outputs.build-new-kernel == 'true'
-    #uses: ./.github/workflows/build-pve-kernel-container.yml
-    #with:
-    #  branch: ${{ needs.check-for-new-kernel.outputs.branch }}
+    if: needs.check-for-new-kernel.outputs.build-new-kernel == 'true'
+    uses: ./.github/workflows/build-pve-kernel-container.yml
+    with:
+      branch: ${{ needs.check-for-new-kernel.outputs.branch }}
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Check parameters
+#        run: |
+#          echo "build-new-kernel: ${{ needs.check-for-new-kernel.outputs.build-new-kernel }}"
+#          echo "branch: ${{ needs.check-for-new-kernel.outputs.branch }}"
