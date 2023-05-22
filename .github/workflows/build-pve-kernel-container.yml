@@ -64,19 +64,21 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        echo Disk usage: start
+        set -x
+        echo "Disk usage: start"
         df -h
         sudo -E apt-get update
         packages="'^dotnet-.*' '^temurin-.*-jdk' '^llvm-.*' 'php.*' google-cloud-sdk azure-cli microsoft-edge-stable \
             google-chrome-stable firefox powershell mono-devel"
         packages_to_remove=$(dpkg -l | grep -E '^ii' | awk '{ print $2 }' | eval grep -E $(printf " -e %s" $packages))
+        echo "Removing packages: ${packages_to_remove}"
         sudo -E apt-get purge -y ${packages_to_remove}
         sudo -E apt-get autoremove -y
         sudo -E apt-get clean
-        echo Disk usage: after apt-get purge
+        echo "Disk usage: after apt-get purge"
         df -h
         sudo -E rm -rf /usr/share/dotnet /usr/local/lib/android /usr/local/share/powershell /usr/local/share/chromium
-        echo Disk usage: after directory removals
+        echo "Disk usage: after directory removals"
         df -h
         #dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
         #du -d 4 -ahx / | sort -h | tail -n 100
