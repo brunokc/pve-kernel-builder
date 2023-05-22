@@ -2,8 +2,11 @@ name: Check version on new pve-kernel releases
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '45 2 * * *' # Every day at 2:45AM UTC
+  workflow_call:
+    inputs:
+      branch:
+        description: 'Branch to check for'
+        required: true
 
 env:
   DEBIAN_FRONTEND: noninteractive
@@ -14,11 +17,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       build-new-kernel: ${{ steps.check-version.outputs.status == 'needs-update' }}
-      branch: ${{ matrix.branch }}
-    strategy:
-      #max-parallel: 1
-      matrix:
-        branch: ['master', 'pve-kernel-5.15']
     #if: github.event.repository.owner.id == github.event.sender.id
     permissions:
       contents: write
@@ -35,24 +33,24 @@ jobs:
     - name: Check for updates
       id: check-version
       run: |
-        config_path='${{ github.workspace }}/config/${{ matrix.branch }}/version'
+        config_path='${{ github.workspace }}/config/${{ inputs.branch }}/version'
         cur_abi_ver=""
         if [[ -e ${config_path} ]]; then
             cur_abi_ver=`yq .version.kernel ${config_path}`
         fi
-        echo "Current cached kernel version for branch ${{ matrix.branch }}: ${cur_abi_ver}"
+        echo "Current cached kernel version for branch ${{ inputs.branch }}: ${cur_abi_ver}"
         proxmox_ver=`curl -s "https://git.proxmox.com/?p=pve-kernel-meta.git;a=shortlog;h=refs/heads/master" | \
             grep -oP "bump version to \K[^<]*" | head -n 1`
-        url="https://git.proxmox.com/?p=pve-kernel.git;a=shortlog;h=refs/heads/${{ matrix.branch }}"
+        url="https://git.proxmox.com/?p=pve-kernel.git;a=shortlog;h=refs/heads/${{ inputs.branch }}"
         payload=`wget $url -qO shortlog.html`
         ver=`grep -oP "bump version to \K[^<,]+" shortlog.html | head -n 1`
         abi_ver=`grep -oP "update ABI file for \K[^<,]+" shortlog.html | head -n 1`
         #kernel_ver="pve-kernel-${abi_ver}-${ver}"
         if [[ ${abi_ver} == ${cur_abi_ver} ]]; then
-            echo "Kernel ABI version ${abi_ver} for branch ${{ matrix.branch }} is up to date. Nothing to do."
+            echo "Kernel ABI version ${abi_ver} for branch ${{ inputs.branch }} is up to date. Nothing to do."
             echo "status=up-to-date" >> $GITHUB_OUTPUT
         else
-            echo "New kernel ABI version avaiable for branch ${{ matrix.branch }}: ${abi_ver}. Will update repository."
+            echo "New kernel ABI version avaiable for branch ${{ inputs.branch }}: ${abi_ver}. Will update repository."
             mkdir -p `dirname ${config_path}`
             sudo echo -e "version:\n  proxmox: ${proxmox_ver}\n  kernel: ${abi_ver}" > ${config_path}
             echo "version=${abi_ver}" >> $GITHUB_OUTPUT
@@ -71,22 +69,10 @@ jobs:
         git commit -m 'Update version to ${{ steps.check-version.outputs.version }}'
         git push
 
-    - name: Call build kernel workflow
-      if: steps.check-version.outputs.status == 'needs-update'
-      uses: ./.github/workflows/build-pve-kernel-container.yml
-      with:
-        branch: ${{ matrix.branch }}
-
-#   invoke-build-kernel:
-#     name: Call build kernel workflow
-#     needs: check-for-new-kernel
-#     if: needs.check-for-new-kernel.outputs.build-new-kernel == 'true'
-#     uses: ./.github/workflows/build-pve-kernel-container.yml
-#     with:
-#       branch: ${{ needs.check-for-new-kernel.outputs.branch }}
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Check parameters
-#        run: |
-#          echo "build-new-kernel: ${{ needs.check-for-new-kernel.outputs.build-new-kernel }}"
-#          echo "branch: ${{ needs.check-for-new-kernel.outputs.branch }}"
+   call-build-kernel-workflow:
+     name: Call build kernel workflow
+     needs: check-for-new-kernel
+     if: needs.check-for-new-kernel.outputs.build-new-kernel == 'true'
+     uses: ./.github/workflows/build-pve-kernel-container.yml
+     with:
+       branch: ${{ inputs.branch }}

@@ -1,0 +1,19 @@
+name: Check for new pve-kernel releases
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '45 2 * * *' # Every day at 2:45AM UTC
+
+env:
+  DEBIAN_FRONTEND: noninteractive
+
+jobs:
+  check-for-new-kernel:
+    name: Check for new release
+    strategy:
+      matrix:
+        branch: ['master', 'pve-kernel-5.15']
+    uses: ./.github/workflows/on-new-pve-kernel-releases.yml
+    with:
+      branch: ${{ matrix.branch }}
