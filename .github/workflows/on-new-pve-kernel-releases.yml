@@ -6,6 +6,7 @@ on:
     inputs:
       branch:
         description: 'Branch to check for'
+        type: string
         required: true
 
 env:
