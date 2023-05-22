@@ -2,11 +2,11 @@ name: Build kernel on new version
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - 'main'
-    paths:
-      - 'config/**/version'
+#  push:
+#    branches:
+#      - 'main'
+#    paths:
+#      - 'config/**/version'
 
 env:
   DEBIAN_FRONTEND: noninteractive

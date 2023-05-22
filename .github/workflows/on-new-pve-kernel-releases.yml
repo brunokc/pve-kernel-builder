@@ -9,9 +9,11 @@ env:
   DEBIAN_FRONTEND: noninteractive
 
 jobs:
-  check:
+  check-for-new-kernel:
     name: Check for new release
     runs-on: ubuntu-latest
+    outputs:
+      build-new-kernel: ${{ steps.check-version.output.status == 'needs-update' }}
     strategy:
       #max-parallel: 1
       matrix:
@@ -67,3 +69,11 @@ jobs:
         git add config/**
         git commit -m 'Update version to ${{ steps.update.outputs.version }}'
         git push
+
+  invoke-build-kernel:
+    name: Run build kernel workflow
+    needs: check-for-new-kernel
+    if: needs.check-for-new-kernel.outputs.build-new-kernel == 'true'
+    uses: ./.github/workflows/build-pve-kernel-container.yml
+    with:
+      branch: ${{ matrix.branch }}
