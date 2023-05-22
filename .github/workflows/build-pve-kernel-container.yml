@@ -35,7 +35,6 @@ on:
         default: false
       runner:
         description: 'Target runner for this workflow'
-        required: true
         type: string
         default: 'ubuntu-22.04'
       repo-url:
