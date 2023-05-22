@@ -67,9 +67,10 @@ jobs:
         echo Disk usage: start
         df -h
         sudo -E apt-get update
-        sudo -E apt-get purge -y '^dotnet-.*' '^temurin-.*-jdk' '^llvm-.*' 'php.*'
-        sudo -E apt-get purge -y google-cloud-sdk azure-cli microsoft-edge-stable google-chrome-stable firefox \
-            powershell mono-devel
+        packages="'^dotnet-.*' '^temurin-.*-jdk' '^llvm-.*' 'php.*' google-cloud-sdk azure-cli microsoft-edge-stable \
+            google-chrome-stable firefox powershell mono-devel"
+        packages_to_remove=$(dpkg -l | grep -E '^ii' | awk '{ print $2 }' | eval grep -E $(printf " -e %s" $packages))
+        sudo -E apt-get purge -y ${packages_to_remove}
         sudo -E apt-get autoremove -y
         sudo -E apt-get clean
         echo Disk usage: after apt-get purge
