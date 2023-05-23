@@ -9,4 +9,10 @@ make
 echo Exporting artifacts
 mkdir -p /output/artifacts
 cp *.deb /output/artifacts
-cp build/abi* /output
+
+for d in build pve-kernel-*; do
+    if [[ -d $d ]]; then
+        echo "found abi files in $d"
+        cp $d/abi* /output
+    fi
+done
