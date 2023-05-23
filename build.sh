@@ -10,5 +10,5 @@ docker build \
     -t ${IMAGE_NAME} .
 
 echo Building PVE kernel...
-mkdir ./output
+mkdir -p ./output
 docker run -v $(pwd)/output:/output ${IMAGE_NAME} scripts/build-kernel.sh
