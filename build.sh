@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 IMAGE_NAME=pve-kernel-build
+DEBIAN_RELEASE=bullseye
+REPO_URL=https://github.com/brunokc/pve-kernel-builder
+REPO_BRANCH=main
 
 echo Preparing container...
 docker build \
