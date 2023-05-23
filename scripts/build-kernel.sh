@@ -2,19 +2,23 @@
 
 set -x
 
+BUILD_DIR=/build
+KERNEL_DIR=$BUILD_DIR/pve-kernel
+OUTPUT_DIR=$BUILD_DIR/output
+
 echo -e "Cores available: $(nproc)"
-cd /build/pve-kernel
+cd $KERNEL_DIR
 
 echo Building kernel...
 make
 
-echo Exporting artifacts
-mkdir -p output/artifacts
-cp *.deb output/artifacts
+echo Exporting artifacts...
+mkdir -p $OUTPUT_DIR/artifacts
+cp *.deb $OUTPUT_DIR/artifacts
 
 for d in build pve-kernel-*; do
     if [[ -d $d ]]; then
-        echo "found abi files in $d"
-        cp $d/abi* output
+        echo "Exporting abi files from $d to $OUTPUT_DIR..."
+        cp $d/abi* $OUTPUT_DIR
     fi
 done
