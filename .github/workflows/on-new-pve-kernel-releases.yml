@@ -40,7 +40,7 @@ jobs:
             cur_abi_ver=`yq .version.kernel ${config_path}`
         fi
         echo "Current cached kernel version for branch ${{ inputs.branch }}: ${cur_abi_ver}"
-        proxmox_ver=`curl -s "https://git.proxmox.com/?p=pve-kernel-meta.git;a=shortlog;h=refs/heads/master" | \
+        proxmox_ver=`curl -s "https://git.proxmox.com/?p=pve-kernel-meta.git;a=shortlog;h=refs/heads/${{ inputs.branch }}" | \
             grep -oP "bump version to \K[^<]*" | head -n 1`
         url="https://git.proxmox.com/?p=pve-kernel.git;a=shortlog;h=refs/heads/${{ inputs.branch }}"
         payload=`wget $url -qO shortlog.html`
