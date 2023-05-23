@@ -32,7 +32,9 @@ RUN set -x \
   && apt-get autoremove --purge \
   && apt-get clean
 
+RUN useradd -m -d /build builder
 USER builder
+
 WORKDIR /build
 COPY patches patches
 COPY scripts scripts
