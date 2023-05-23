@@ -32,6 +32,7 @@ RUN set -x \
   && apt-get autoremove --purge \
   && apt-get clean
 
+USER builder
 WORKDIR /build
 COPY patches patches
 COPY scripts scripts
