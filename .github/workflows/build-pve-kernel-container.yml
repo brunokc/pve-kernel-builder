@@ -69,7 +69,6 @@ jobs:
         echo "Disk usage: start"
         df -h
         sudo -E apt-get update
-        dpkg -l | grep -E '^ii'
         packages="'^dotnet-.*' '^temurin-.*-jdk' '^llvm-.*' 'php.*' google-cloud-sdk azure-cli microsoft-edge-stable \
             google-chrome-stable firefox powershell mono-devel"
         # Adding cat at the end to reset the exit status to 0 in case grep doesn't find anything
