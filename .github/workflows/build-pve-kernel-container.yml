@@ -103,6 +103,7 @@ jobs:
       id: docker-build
       run: |
         mkdir output
+        chmod 777 output
         docker run -v ${{ github.workspace }}/output:/build/output pve-kernel-build scripts/build-kernel.sh
         echo "status=success" >> $GITHUB_OUTPUT
 
