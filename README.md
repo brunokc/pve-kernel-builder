@@ -36,7 +36,7 @@ RMRRs on Intel platforms to allow certain PCIe devices to be passed through
 to VMs (credit to [kiler129](https://github.com/kiler129/relax-intel-rmrr)).
 This patch works around the dreaded `Device is ineligible for IOMMU domain 
 attach due to platform RMRR requirement. Contact your platform vendor.` 
-message.
+message when trying to passthrough certain PCIe devices to a VM.
 
 ## How to Build
 
@@ -57,6 +57,51 @@ workflow.
 
 In all cases, kernel builds are done using docker to contain the dependencies
 and make cleanup easier.
+
+## Installation
+
+Regardless of how you built the kernel, you'll end up with a few of .deb files. 
+To install them you need to:
+
+1. Go to the [releases tab](https://github.com/brunokc/pve-kernel-builder/releases/) and pick appropriate packages
+   - If you don't use your Proxmox machine for building software, you really only need the `pve-kernel-<version>-pve-relaxablermrr_<version>_amd64.deb` file.
+3. Download all applicable `*.deb`s packages to your machine
+4. Install the package(s) using `dpkg -i *.deb` in the folder where you downloaded the debs
+5. *(OPTIONAL)* Verify the kernel works with the patch disabled by rebooting and checking if `uname -r` shows a version 
+   ending with `-pve-relaxablermrr`
+5. [Configure the kernel](README.md#configuration)
+
+## Configuration
+
+By default, after the kernel is installed, the patch will be *inactive* (i.e. the kernel will
+behave like no patch was applied). To activate it you have to add `relax_rmrr` to the `intel_iommu`
+option on your Linux boot args.
+
+In most distros (including Proxmox) you do this by:
+
+1. Opening `/etc/default/grub` (e.g. using `nano /etc/default/grub`)
+2. Editing the `GRUB_CMDLINE_LINUX_DEFAULT` to include the option:
+
+    - Example of old line:
+      ```
+      GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on iommu=pt intremap=no_x2apic_optout"
+      ```
+    - Example of new line:
+      ```
+      GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on,relax_rmrr iommu=pt intremap=no_x2apic_optout"
+      ```
+    - *Side note: these are actually options which will make your PCI passthrough work and do so efficiently*
+3. Running `update-grub`
+4. Rebooting
+
+To verify if the the patch is active execute `dmesg | grep 'Intel-IOMMU'` after reboot. 
+You should see a result similar to this:
+ 
+```
+root@sandbox:~# dmesg | grep 'Intel-IOMMU'
+[    0.050195] DMAR: Intel-IOMMU: assuming all RMRRs are relaxable. This can lead to instability or data loss
+root@sandbox:~# 
+```
 
 ## Acknowledgements
 
