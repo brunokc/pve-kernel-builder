@@ -25,6 +25,11 @@ on:
         description: 'Branch to build'
         required: true
         type: string
+      upload-artifacts:
+        description: 'Control whether artifacts should be uploaded'
+        required: false
+        type: boolean
+        default: true
 
   workflow_call:
     inputs:
@@ -46,10 +51,14 @@ on:
         description: 'Branch to build'
         required: true
         type: string
+      upload-artifacts:
+        description: 'Control whether artifacts should be uploaded'
+        required: false
+        type: boolean
+        default: true
 
 env:
   DEBIAN_RELEASE: bullseye
-  UPLOAD_BIN_DIR: true
 
 jobs:
   build:
@@ -115,7 +124,7 @@ jobs:
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@master
-      if: steps.docker-build.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
+      if: steps.docker-build.outputs.status == 'success' && inputs.upload-artifacts
       with:
         name: ${{ steps.kernel-version.outputs.version }}
         path: ./output/artifacts
