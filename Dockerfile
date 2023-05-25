@@ -46,6 +46,7 @@ RUN set -x \
 # Apply patches
 RUN set -x \
   && cp patches/kernel/*.patch pve-kernel/patches/kernel \
+  && cp patches/kernel/$REPO_BRANCH/*.patch pve-kernel/patches/kernel \
   && cd pve-kernel \
   && mkdir build-patches \
   && cp ../patches/build/*.patch build-patches \
