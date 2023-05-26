@@ -1,4 +1,4 @@
-# PVE Kernel Builder
+# Proxmox VE Kernel Builder
 
 [![Check for new pve-kernel releases](https://github.com/brunokc/pve-kernel-builder/actions/workflows/kernel-check-schedule.yml/badge.svg)](https://github.com/brunokc/pve-kernel-builder/actions/workflows/kernel-check-schedule.yml)  
 Latest from [Proxmox](https://git.proxmox.com/):
@@ -7,6 +7,7 @@ Latest from [Proxmox](https://git.proxmox.com/):
 <img src="https://img.shields.io/badge/dynamic/yaml?color=informational&label=proxmox&query=version.proxmox&url=https%3A%2F%2Fraw.githubusercontent.com%2Fbrunokc%2Fpve-kernel-builder%2Fmain%2Fconfig%2Fpve-kernel-5.15%2Fversion"> <sup>with</sup> <img src="https://img.shields.io/badge/dynamic/yaml?color=informational&label=kernel&query=version.kernel&url=https%3A%2F%2Fraw.githubusercontent.com%2Fbrunokc%2Fpve-kernel-builder%2Fmain%2Fconfig%2Fpve-kernel-5.15%2Fversion">  
 Latest [releases](https://github.com/brunokc/pve-kernel-builder/releases):
 [![Latest release](https://img.shields.io/github/v/release/brunokc/pve-kernel-builder?display_name=release&sort=date)](https://github.com/brunokc/pve-kernel-builder/releases)
+<sup>&nbsp;|&nbsp;</sup>
 [![Latest release](https://img.shields.io/github/v/release/brunokc/pve-kernel-builder?display_name=release&include_prereleases&sort=date)](https://github.com/brunokc/pve-kernel-builder/releases)
 
 ---
