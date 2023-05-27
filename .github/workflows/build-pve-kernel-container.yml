@@ -26,7 +26,7 @@ on:
         required: true
         type: string
       upload-artifacts:
-        description: 'Control whether artifacts should be uploaded'
+        description: 'Upload artifacts'
         required: false
         type: boolean
         default: true
