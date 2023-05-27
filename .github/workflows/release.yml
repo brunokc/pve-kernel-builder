@@ -4,6 +4,16 @@ name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      artifact-name:
+        type: string
+        required: true
+      kernel-version:
+        type: string
+        required: true
+      proxmox-version:
+        type: string
+        required: true
   #push:
   #  paths:
   #    - releaseVersion
@@ -19,23 +29,23 @@ jobs:
     - name: Download Artifact
       uses: actions/download-artifact@v1
       with:
-        name: ${{ artifact-name }}
+        name: ${{ inputs.artifact-name }}
         path: ./assets
 
     - name: Create ReleaseNote
       id: releaseNote
       uses: actions/github-script@0.3.0
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        #github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const core = require('@actions/core')
           const fs = require('fs');
           #const runnerVersion = fs.readFileSync('${{ github.workspace }}/src/runnerversion', 'utf8').replace(/\n$/g, '')
           var releaseNote = fs.readFileSync('${{ github.workspace }}/release-notes.md', 'utf8')
-          releaseNode = releaseNote.replace(/<KERNEL_VERSION>/g, kernelVersion)
-          releaseNode = releaseNote.replace(/<PROXMOX_VERSION>/g, proxmoxVersion)
+          releaseNode = releaseNote.replace(/<KERNEL_VERSION>/g, ${{ inputs.kernel-version }})
+          releaseNode = releaseNote.replace(/<PROXMOX_VERSION>/g, ${{ inputs.proxmox-version }})
           console.log(releaseNote)
-          core.setOutput('version', runnerVersion);
+          #core.setOutput('version', runnerVersion);
           core.setOutput('note', releaseNote);
 
 #    - name: Create GitHub release
@@ -66,11 +76,11 @@ jobs:
       #if: startsWith(github.ref, 'refs/tags/')
       with:
         #repository: brunokc/pve-kernel-builder
-        name: "Proxmox VE kernel ${{ steps.releaseNote.outputs.version }} (Proxmox VE ${{ proxmox_version }})"
+        name: "Proxmox VE kernel ${{ inputs.kernel-version }} (Proxmox VE ${{ intputs.proxmox-version }})"
         body: ${{ steps.releaseNote.outputs.note }}
         # note you'll typically need to create a personal access token
         # with permissions to create releases in the other repo
-        token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+        #token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
         draft: true
         fail_on_unmatched_files: true
         files: ./assets/*.deb
