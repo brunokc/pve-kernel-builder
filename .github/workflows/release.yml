@@ -76,7 +76,7 @@ jobs:
         #if: startsWith(github.ref, 'refs/tags/')
         with:
           #repository: brunokc/pve-kernel-builder
-          name: "Proxmox VE kernel ${{ inputs.kernel-version }} (Proxmox VE ${{ intputs.proxmox-version }})"
+          name: "Proxmox VE kernel ${{ inputs.kernel-version }} (Proxmox VE ${{ inputs.proxmox-version }})"
           body: ${{ steps.releaseNote.outputs.note }}
           # note you'll typically need to create a personal access token
           # with permissions to create releases in the other repo
