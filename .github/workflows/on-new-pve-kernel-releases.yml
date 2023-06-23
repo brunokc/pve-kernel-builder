@@ -25,6 +25,8 @@ jobs:
     steps:
     - name: Checkout Sources
       uses: actions/checkout@main
+      with:
+        ssh-key: ${{ secrets.VERSIONUPDATECOMMITKEY }}
 
     - name: Initialization environment
       run: |
