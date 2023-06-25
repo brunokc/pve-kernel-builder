@@ -26,7 +26,7 @@ jobs:
     - name: Checkout Sources
       uses: actions/checkout@main
       with:
-        ssh-key: ${{ secrets.VERSIONUPDATECOMMITKEY }}
+        token: ${{ secrets.PAT }}
 
     - name: Initialization environment
       run: |
@@ -65,8 +65,8 @@ jobs:
       continue-on-error: true
       if: steps.check-version.outputs.status == 'needs-update'
       run: |
-        git config --local user.email "1355373+brunokc@users.noreply.github.com"
-        git config --local user.name "Bruno Kraychete da Costa"
+        git config --local user.email "github-actions@github.com"
+        git config --local user.name "Github Actions"
         git pull
         git add config/**
         git commit -m 'Update version to ${{ steps.check-version.outputs.version }}'
