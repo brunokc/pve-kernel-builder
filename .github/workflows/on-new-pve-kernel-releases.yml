@@ -2,6 +2,16 @@ name: Check version on new pve-kernel releases
 
 on:
   workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to check for'
+        type: string
+        required: true
+      token:
+        description: 'Token used in git operations'
+        default: ${{ secrets.GITHUB_TOKEN }}
+        required: false
+        
   workflow_call:
     inputs:
       branch:
