@@ -45,10 +45,15 @@ RUN set -x \
 
 # Apply patches
 RUN set -x \
-  && cp patches/kernel/*.patch pve-kernel/patches/kernel \
-  && cp patches/kernel/$REPO_BRANCH/*.patch pve-kernel/patches/kernel \
   && cd pve-kernel \
+  && scripts/copy-patches.sh ../patches/kernel/*.patch patches/kernel \
+  && scripts/copy-patches.sh ../patches/kernel/$REPO_BRANCH/*.patch patches/kernel \
   && mkdir build-patches \
-  && cp ../patches/build/*.patch build-patches \
-  && cp ../patches/build/$REPO_BRANCH/*.patch build-patches \
-  && for patch in build-patches/*.patch; do if [ -f $patch ]; then echo "Applying patch '$patch'" && patch -p1 < ${patch}; fi; done
+  && scripts/copy-patches.sh ../patches/build/*.patch build-patches \
+  && scripts/copy-patches.sh ../patches/build/$REPO_BRANCH/*.patch build-patches \
+  && for patch in build-patches/*.patch; do \
+  &&   if [ -f $patch ]; then \
+  &&     echo "Applying build patch '$patch'" \
+  &&     patch -p1 < ${patch}; \
+  &&   fi \
+  && done
