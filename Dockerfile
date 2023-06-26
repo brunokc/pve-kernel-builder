@@ -43,17 +43,21 @@ COPY scripts scripts
 RUN set -x \
     && git clone ${REPO_URL} -b ${REPO_BRANCH} pve-kernel
 
-# Apply patches
+# Copy kernel patches
 RUN set -x \
   && cd pve-kernel \
-  && scripts/copy-patches.sh ../patches/kernel/*.patch patches/kernel \
-  && scripts/copy-patches.sh ../patches/kernel/$REPO_BRANCH/*.patch patches/kernel \
+  && ../scripts/copy-patches.sh ../patches/kernel/*.patch patches/kernel \
+  && ../scripts/copy-patches.sh ../patches/kernel/$REPO_BRANCH/*.patch patches/kernel \
+
+# Apply build patches
+RUN set -x \
+  && cd pve-kernel \
   && mkdir build-patches \
-  && scripts/copy-patches.sh ../patches/build/*.patch build-patches \
-  && scripts/copy-patches.sh ../patches/build/$REPO_BRANCH/*.patch build-patches \
+  && ../scripts/copy-patches.sh ../patches/build/*.patch build-patches \
+  && ../scripts/copy-patches.sh ../patches/build/$REPO_BRANCH/*.patch build-patches \
   && for patch in build-patches/*.patch; do \
        if [ -f $patch ]; then \
          echo "Applying build patch '$patch'" \
-         patch -p1 < ${patch}; \
+         patch -p1 < ${patch} \
        fi \
      done
