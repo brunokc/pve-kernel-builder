@@ -8,6 +8,10 @@ on:
         description: 'Branch to check for'
         type: string
         required: true
+    secrets:
+      token:
+        description: 'Token used in git operations'
+        required: false
 
 env:
   DEBIAN_FRONTEND: noninteractive
@@ -26,7 +30,7 @@ jobs:
     - name: Checkout Sources
       uses: actions/checkout@main
       with:
-        token: ${{ secrets.PAT }}
+        token: ${{ secrets.token }}
 
     - name: Initialization environment
       run: |
