@@ -52,8 +52,8 @@ RUN set -x \
   && scripts/copy-patches.sh ../patches/build/*.patch build-patches \
   && scripts/copy-patches.sh ../patches/build/$REPO_BRANCH/*.patch build-patches \
   && for patch in build-patches/*.patch; do \
-  &&   if [ -f $patch ]; then \
-  &&     echo "Applying build patch '$patch'" \
-  &&     patch -p1 < ${patch}; \
-  &&   fi \
-  && done
+       if [ -f $patch ]; then \
+         echo "Applying build patch '$patch'" \
+         patch -p1 < ${patch}; \
+       fi \
+     done
