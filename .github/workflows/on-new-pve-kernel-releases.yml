@@ -7,11 +7,7 @@ on:
         description: 'Branch to check for'
         type: string
         required: true
-      token:
-        description: 'Token used in git operations'
-        default: ${{ secrets.GITHUB_TOKEN }}
-        required: false
-        
+
   workflow_call:
     inputs:
       branch:
@@ -25,6 +21,7 @@ on:
 
 env:
   DEBIAN_FRONTEND: noninteractive
+  PUSH_TOKEN: ${{ secrets.token }}
 
 jobs:
   check-for-new-kernel:
@@ -37,10 +34,17 @@ jobs:
       contents: write
 
     steps:
+    - name: Set Git token (if needed)
+      if: env.PUSH_TOKEN == ''
+      env:
+        TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        echo "PUSH_TOKEN=${TOKEN}" > $GITHUB_ENV
+
     - name: Checkout Sources
       uses: actions/checkout@main
       with:
-        token: ${{ secrets.token }}
+        token: ${{ env.PUSH_TOKEN }}
 
     - name: Initialization environment
       run: |
