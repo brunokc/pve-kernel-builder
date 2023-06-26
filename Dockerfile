@@ -47,12 +47,12 @@ RUN set -x \
 RUN set -x \
   && cd pve-kernel \
   && ../scripts/copy-patches.sh ../patches/kernel/*.patch patches/kernel \
-  && ../scripts/copy-patches.sh ../patches/kernel/$REPO_BRANCH/*.patch patches/kernel \
+  && ../scripts/copy-patches.sh ../patches/kernel/$REPO_BRANCH/*.patch patches/kernel
 
 # Apply build patches
 RUN set -x \
   && cd pve-kernel \
-  && mkdir build-patches \
+  && mkdir -p build-patches \
   && ../scripts/copy-patches.sh ../patches/build/*.patch build-patches \
   && ../scripts/copy-patches.sh ../patches/build/$REPO_BRANCH/*.patch build-patches \
   && for patch in build-patches/*.patch; do \
