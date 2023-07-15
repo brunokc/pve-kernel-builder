@@ -90,7 +90,7 @@ jobs:
         git config --local user.name "Github Actions"
         git pull
         git add config/**
-        git commit -m 'Update version to ${{ steps.check-version.outputs.version }}'
+        git commit -m 'Update version for branch ${{ inputs.branch }} to ${{ steps.check-version.outputs.kernel-version }}'
         git push
 
   build-kernel:
