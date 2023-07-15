@@ -102,10 +102,10 @@ jobs:
 
   release-new-kernel:
     name: Release new PVE kernels
-    needs: build-kernel
+    needs: [check-for-new-kernel, build-kernel]
     if: needs.build-kernel.outputs.build-successful == 'true'
     uses: ./.github/workflows/release.yml
     with:
       artifact-name: ${{ needs.build-kernel.outputs.artifacts-name }}
-      kernel-version: ${{ jobs.check-for-new-kernel.outputs.kernel-version }}
-      proxmox-version: ${{ jobs.check-for-new-kernel.outputs.proxmox-version }}
+      kernel-version: ${{ needs.check-for-new-kernel.outputs.kernel-version }}
+      proxmox-version: ${{ needs.check-for-new-kernel.outputs.proxmox-version }}
