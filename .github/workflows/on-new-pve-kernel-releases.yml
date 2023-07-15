@@ -107,6 +107,7 @@ jobs:
     if: needs.build-kernel.outputs.build-successful == 'true'
     uses: ./.github/workflows/release.yml
     with:
+      token: ${{ secrets.token }}
       artifact-name: ${{ needs.build-kernel.outputs.artifacts-name }}
       kernel-version: ${{ needs.check-for-new-kernel.outputs.kernel-version }}
       proxmox-version: ${{ needs.check-for-new-kernel.outputs.proxmox-version }}
