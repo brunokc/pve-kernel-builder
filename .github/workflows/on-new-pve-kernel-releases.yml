@@ -30,6 +30,7 @@ jobs:
     #if: github.event.repository.owner.id == github.event.sender.id
     outputs:
       new-kernel-available: ${{ steps.check-version.outputs.status == 'needs-update' }}
+      kernel-version: ${{ steps.check-version.outputs.kernel-version }}
       proxmox-version: ${{ steps.check-version.outputs.proxmox-version }}
     permissions:
       contents: write
