@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-while getopts ':d:u:b:' OPTION; do
+while getopts ':d:u:b:s' OPTION; do
     case "$OPTION" in
         d)
             DEBIAN_RELEASE=$OPTARG
@@ -10,6 +10,9 @@ while getopts ':d:u:b:' OPTION; do
             ;;
         b)
             REPO_BRANCH=$OPTARG
+            ;;
+        s)
+            SKIP_BUILD=1
             ;;
         ?|h|help)
             echo "Usage: $(basename $0) [-d <DEBIAN_RELEASE>] [-u <REPO_URL>] -b <REPO_BRANCH>"
@@ -44,6 +47,8 @@ docker build \
     --build-arg REPO_BRANCH=${REPO_BRANCH} \
     -t ${IMAGE_NAME} .
 
-echo Building PVE kernel...
-mkdir -p ./output
-docker run -v $(pwd)/output:/build/output ${IMAGE_NAME} scripts/build-kernel.sh
+if [ "$SKIP_BUILD" != "1" ]; then
+    echo Building PVE kernel...
+    mkdir -p ./output
+    docker run -v $(pwd)/output:/build/output ${IMAGE_NAME} scripts/build-kernel.sh
+fi
