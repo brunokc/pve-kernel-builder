@@ -3,17 +3,6 @@
 name: Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      artifact-name:
-        type: string
-        required: true
-      kernel-version:
-        type: string
-        required: true
-      proxmox-version:
-        type: string
-        required: true
   workflow_call:
     inputs:
       artifact-name:
@@ -62,28 +51,6 @@ jobs:
             console.log(releaseNote)
             #core.setOutput('version', runnerVersion);
             core.setOutput('release-note', releaseNote);
-
-#    - name: Create GitHub release
-#      uses: actions/create-release@master
-#      id: createRelease
-#      name: Create ${{ steps.releaseNote.outputs.version }} Kernel Release
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      with:
-#        tag_name: "v${{ steps.releaseNote.outputs.version }}"
-#        release_name: "Proxmox VE kernel ${{ steps.releaseNote.outputs.version }} (Proxmox VE ${{ proxmox_version }})"
-#        body: |
-#          ${{ steps.releaseNote.outputs.note }}
-#
-#    - name: Upload Release Assets
-#      uses: actions/upload-release-asset@v1.0.1
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      with:
-#        upload_url: ${{ steps.createRelease.outputs.upload_url }}
-#        asset_path: ${{ github.workspace }}/actions-runner-linux-x64-${{ steps.releaseNote.outputs.version }}.tar.gz
-#        asset_name: actions-runner-linux-x64-${{ steps.releaseNote.outputs.version }}.tar.gz
-#        asset_content_type: application/octet-stream
 
       # Using action-gh-release from https://github.com/softprops/action-gh-release
       - name: Release
