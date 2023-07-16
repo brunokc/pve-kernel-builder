@@ -70,8 +70,8 @@ jobs:
           script: |
             const fs = require('fs')
             var releaseNote = fs.readFileSync('${{ github.workspace }}/release-notes.md', 'utf8')
-            releaseNote = releaseNote.replace(/<KERNEL_VERSION>/g, ${{ inputs.kernel-version }})
-            releaseNote = releaseNote.replace(/<PROXMOX_VERSION>/g, ${{ inputs.proxmox-version }})
+            releaseNote = releaseNote.replace(/<KERNEL_VERSION>/g, '${{ inputs.kernel-version }}')
+            releaseNote = releaseNote.replace(/<PROXMOX_VERSION>/g, '${{ inputs.proxmox-version }}')
             console.log(releaseNote)
             core.setOutput('release-note', releaseNote)
 
