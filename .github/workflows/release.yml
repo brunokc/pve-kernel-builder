@@ -33,6 +33,9 @@ on:
   #  paths:
   #    - releaseVersion
 
+env:
+  TOKEN: ${{ secrets.token }}
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -40,6 +43,13 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v3
 
+      - name: Set Git token (if needed)
+        if: env.TOKEN == ''
+        env:
+          TOK: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "TOKEN=${TOK}" > $GITHUB_ENV
+          
       #- name: Download build artifacts
       #  uses: actions/download-artifact@v1
       #  with:
