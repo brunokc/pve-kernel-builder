@@ -68,14 +68,14 @@ jobs:
         with:
           github-token: ${{ env.TOKEN }}
           script: |
-            #const core = require('@actions/core')
+            //const core = require('@actions/core')
             const fs = require('fs');
-            #const runnerVersion = fs.readFileSync('${{ github.workspace }}/src/runnerversion', 'utf8').replace(/\n$/g, '')
+            //const runnerVersion = fs.readFileSync('${{ github.workspace }}/src/runnerversion', 'utf8').replace(/\n$/g, '')
             var releaseNote = fs.readFileSync('${{ github.workspace }}/release-notes.md', 'utf8')
             releaseNode = releaseNote.replace(/<KERNEL_VERSION>/g, ${{ inputs.kernel-version }})
             releaseNode = releaseNote.replace(/<PROXMOX_VERSION>/g, ${{ inputs.proxmox-version }})
             console.log(releaseNote)
-            #core.setOutput('version', runnerVersion);
+            //core.setOutput('version', runnerVersion);
             core.setOutput('release-note', releaseNote);
 
       # Using action-gh-release from https://github.com/softprops/action-gh-release
