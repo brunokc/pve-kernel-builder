@@ -3,6 +3,17 @@
 name: Release
 
 on:
+  workflow_dispatch:
+    inputs:
+      artifact-name:
+        type: string
+        required: true
+      kernel-version:
+        type: string
+        required: true
+      proxmox-version:
+        type: string
+        required: true
   workflow_call:
     inputs:
       artifact-name:
@@ -26,15 +37,20 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout sources
         uses: actions/checkout@v3
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v1
-        with:
-          name: ${{ inputs.artifact-name }}
-          path: ./assets
+      #- name: Download build artifacts
+      #  uses: actions/download-artifact@v1
+      #  with:
+      #    name: ${{ inputs.artifact-name }}
+      #    path: ./assets
+      - name: Create dummy content
+        run: |
+          mkdir -p ./assets
+          echo "Content 1" > ./assets/file1.deb 
+          echo "Content 2" > ./assets/file2.deb 
+          echo "Content 3" > ./assets/file3.deb 
 
       - name: Create Release Note
         id: create-release-note
