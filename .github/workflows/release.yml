@@ -86,6 +86,7 @@ jobs:
           # Note: you'll typically need to create a personal access token
           # with permissions to create releases in the other repo
           #token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          token: ${{ env.TOKEN }}
           draft: true
           fail_on_unmatched_files: true
           files: ./assets/*.deb
