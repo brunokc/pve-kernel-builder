@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      
+
     steps:
       - name: Checkout sources
         uses: actions/checkout@v3
@@ -52,18 +52,12 @@ jobs:
           TOK: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "TOKEN=${TOK}" > $GITHUB_ENV
-          
-      #- name: Download build artifacts
-      #  uses: actions/download-artifact@v1
-      #  with:
-      #    name: ${{ inputs.artifact-name }}
-      #    path: ./assets
-      - name: Create dummy content
-        run: |
-          mkdir -p ./assets
-          echo "Content 1" > ./assets/file1.deb 
-          echo "Content 2" > ./assets/file2.deb 
-          echo "Content 3" > ./assets/file3.deb 
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ./assets
 
       - name: Create Release Note
         id: create-release-note
