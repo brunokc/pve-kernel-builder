@@ -8,7 +8,7 @@ Latest from [Proxmox](https://git.proxmox.com/):
 Latest [releases](https://github.com/brunokc/pve-kernel-builder/releases):
 [![Latest release](https://img.shields.io/github/v/release/brunokc/pve-kernel-builder?display_name=release&sort=date)](https://github.com/brunokc/pve-kernel-builder/releases)
 <sup>&nbsp;|&nbsp;</sup>
-[![Latest release](https://img.shields.io/github/v/release/brunokc/pve-kernel-builder?display_name=release&include_prereleases&sort=date)](https://github.com/brunokc/pve-kernel-builder/releases)
+[![Latest release](https://img.shields.io/github/v/release/brunokc/pve-kernel-builder?display_name=release&sort=date&filter=*5.15*)](https://github.com/brunokc/pve-kernel-builder/releases)
 
 ---
 
