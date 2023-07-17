@@ -56,6 +56,16 @@ on:
         required: false
         type: boolean
         default: true
+    outputs:
+      build-successful:
+        description: 'Build was successful'
+        value: ${{ jobs.build.outputs.build-successful }}
+      kernel-version:
+        description: 'Kernel version built'
+        value: ${{ jobs.build.outputs.kernel-version }}
+      artifacts-name:
+        description: 'Artifact named used'
+        value: ${{ jobs.build.outputs.artifacts-name }}
 
 env:
   DEBIAN_RELEASE: bullseye
@@ -65,6 +75,11 @@ jobs:
     name: Build pve kernel
     runs-on: ${{ inputs.runner }}
     if: github.event.repository.owner.id == github.event.sender.id
+    outputs:
+      build-successful: ${{ steps.docker-build.outputs.status == 'success' }}
+      kernel-version: ${{ steps.kernel-version.outputs.version }}
+      # For now, use kernel version as the artifacts name
+      artifacts-name: ${{ steps.kernel-version.outputs.version }}
 
     steps:
     - name: Checkout

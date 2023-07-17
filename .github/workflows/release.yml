@@ -14,61 +14,69 @@ on:
       proxmox-version:
         type: string
         required: true
+  workflow_call:
+    inputs:
+      artifact-name:
+        type: string
+        required: true
+      kernel-version:
+        type: string
+        required: true
+      proxmox-version:
+        type: string
+        required: true
+    secrets:
+      token:
+        description: 'Token used in git operations'
+        required: true
   #push:
   #  paths:
   #    - releaseVersion
 
+env:
+  TOKEN: ${{ secrets.token }}
+
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      
     steps:
-
       - name: Checkout sources
         uses: actions/checkout@v3
 
-      - name: Download Artifact
-        uses: actions/download-artifact@v1
-        with:
-          name: ${{ inputs.artifact-name }}
-          path: ./assets
+      - name: Set Git token (if needed)
+        if: env.TOKEN == ''
+        env:
+          TOK: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "TOKEN=${TOK}" > $GITHUB_ENV
+          
+      #- name: Download build artifacts
+      #  uses: actions/download-artifact@v1
+      #  with:
+      #    name: ${{ inputs.artifact-name }}
+      #    path: ./assets
+      - name: Create dummy content
+        run: |
+          mkdir -p ./assets
+          echo "Content 1" > ./assets/file1.deb 
+          echo "Content 2" > ./assets/file2.deb 
+          echo "Content 3" > ./assets/file3.deb 
 
-      - name: Create ReleaseNote
-        id: releaseNote
-        uses: actions/github-script@0.3.0
+      - name: Create Release Note
+        id: create-release-note
+        uses: actions/github-script@v6
         with:
-          #github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ env.TOKEN }}
           script: |
-            const core = require('@actions/core')
-            const fs = require('fs');
-            #const runnerVersion = fs.readFileSync('${{ github.workspace }}/src/runnerversion', 'utf8').replace(/\n$/g, '')
+            const fs = require('fs')
             var releaseNote = fs.readFileSync('${{ github.workspace }}/release-notes.md', 'utf8')
-            releaseNode = releaseNote.replace(/<KERNEL_VERSION>/g, ${{ inputs.kernel-version }})
-            releaseNode = releaseNote.replace(/<PROXMOX_VERSION>/g, ${{ inputs.proxmox-version }})
+            releaseNote = releaseNote.replace(/<KERNEL_VERSION>/g, '${{ inputs.kernel-version }}')
+            releaseNote = releaseNote.replace(/<PROXMOX_VERSION>/g, '${{ inputs.proxmox-version }}')
             console.log(releaseNote)
-            #core.setOutput('version', runnerVersion);
-            core.setOutput('note', releaseNote);
-
-#    - name: Create GitHub release
-#      uses: actions/create-release@master
-#      id: createRelease
-#      name: Create ${{ steps.releaseNote.outputs.version }} Kernel Release
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      with:
-#        tag_name: "v${{ steps.releaseNote.outputs.version }}"
-#        release_name: "Proxmox VE kernel ${{ steps.releaseNote.outputs.version }} (Proxmox VE ${{ proxmox_version }})"
-#        body: |
-#          ${{ steps.releaseNote.outputs.note }}
-#
-#    - name: Upload Release Assets
-#      uses: actions/upload-release-asset@v1.0.1
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      with:
-#        upload_url: ${{ steps.createRelease.outputs.upload_url }}
-#        asset_path: ${{ github.workspace }}/actions-runner-linux-x64-${{ steps.releaseNote.outputs.version }}.tar.gz
-#        asset_name: actions-runner-linux-x64-${{ steps.releaseNote.outputs.version }}.tar.gz
-#        asset_content_type: application/octet-stream
+            core.setOutput('release-note', releaseNote)
 
       # Using action-gh-release from https://github.com/softprops/action-gh-release
       - name: Release
@@ -77,10 +85,11 @@ jobs:
         with:
           #repository: brunokc/pve-kernel-builder
           name: "Proxmox VE kernel ${{ inputs.kernel-version }} (Proxmox VE ${{ inputs.proxmox-version }})"
-          body: ${{ steps.releaseNote.outputs.note }}
-          # note you'll typically need to create a personal access token
+          body: ${{ steps.create-release-note.outputs.release-note }}
+          # Note: you'll typically need to create a personal access token
           # with permissions to create releases in the other repo
           #token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          token: ${{ env.TOKEN }}
           draft: true
           fail_on_unmatched_files: true
           files: ./assets/*.deb

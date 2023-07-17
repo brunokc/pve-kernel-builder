@@ -27,9 +27,11 @@ jobs:
   check-for-new-kernel:
     name: Check for new release
     runs-on: ubuntu-latest
-    outputs:
-      build-new-kernel: ${{ steps.check-version.outputs.status == 'needs-update' }}
     #if: github.event.repository.owner.id == github.event.sender.id
+    outputs:
+      new-kernel-available: ${{ steps.check-version.outputs.status == 'needs-update' }}
+      kernel-version: ${{ steps.check-version.outputs.kernel-version }}
+      proxmox-version: ${{ steps.check-version.outputs.proxmox-version }}
     permissions:
       contents: write
 
@@ -74,7 +76,8 @@ jobs:
             echo "New kernel ABI version avaiable for branch ${{ inputs.branch }}: ${abi_ver}. Will update repository."
             mkdir -p `dirname ${config_path}`
             sudo echo -e "version:\n  proxmox: ${proxmox_ver}\n  kernel: ${abi_ver}" > ${config_path}
-            echo "version=${abi_ver}" >> $GITHUB_OUTPUT
+            echo "kernel-version=${abi_ver}" >> $GITHUB_OUTPUT
+            echo "proxmox-version=${proxmox_ver}" >> $GITHUB_OUTPUT
             echo "status=needs-update" >> $GITHUB_OUTPUT
         fi
         rm -f shortlog.html
@@ -87,13 +90,24 @@ jobs:
         git config --local user.name "Github Actions"
         git pull
         git add config/**
-        git commit -m 'Update version to ${{ steps.check-version.outputs.version }}'
+        git commit -m 'Update version for branch ${{ inputs.branch }} to ${{ steps.check-version.outputs.kernel-version }}'
         git push
 
-  call-build-kernel-workflow:
+  build-kernel:
     name: Call build kernel workflow
     needs: check-for-new-kernel
-    if: needs.check-for-new-kernel.outputs.build-new-kernel == 'true'
+    if: needs.check-for-new-kernel.outputs.new-kernel-available == 'true'
     uses: ./.github/workflows/build-pve-kernel-container.yml
     with:
       branch: ${{ inputs.branch }}
+
+  release-new-kernel:
+    name: Release new PVE kernels
+    needs: [check-for-new-kernel, build-kernel]
+    if: needs.build-kernel.outputs.build-successful == 'true'
+    uses: ./.github/workflows/release.yml
+    with:
+      token: ${{ secrets.token }}
+      artifact-name: ${{ needs.build-kernel.outputs.artifacts-name }}
+      kernel-version: ${{ needs.check-for-new-kernel.outputs.kernel-version }}
+      proxmox-version: ${{ needs.check-for-new-kernel.outputs.proxmox-version }}
