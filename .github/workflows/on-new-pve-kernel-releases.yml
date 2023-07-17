@@ -16,12 +16,12 @@ on:
         required: true
     secrets:
       token:
-        description: 'Token used in git operations'
+        description: 'Token used in privileged operations'
         required: false
 
 env:
   DEBIAN_FRONTEND: noninteractive
-  PUSH_TOKEN: ${{ secrets.token }}
+  TOKEN: ${{ secrets.token }}
 
 jobs:
   check-for-new-kernel:
@@ -37,16 +37,16 @@ jobs:
 
     steps:
     - name: Set Git token (if needed)
-      if: env.PUSH_TOKEN == ''
+      if: env.TOKEN == ''
       env:
-        TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TOK: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        echo "PUSH_TOKEN=${TOKEN}" > $GITHUB_ENV
+        echo "TOKEN=${TOK}" > $GITHUB_ENV
 
     - name: Checkout Sources
       uses: actions/checkout@main
       with:
-        token: ${{ env.PUSH_TOKEN }}
+        token: ${{ env.TOKEN }}
 
     - name: Initialization environment
       run: |
@@ -107,7 +107,7 @@ jobs:
     if: needs.build-kernel.outputs.build-successful == 'true'
     uses: ./.github/workflows/release.yml
     with:
-      token: ${{ secrets.token }}
+      token: ${{ env.TOKEN }}
       artifact-name: ${{ needs.build-kernel.outputs.artifacts-name }}
       kernel-version: ${{ needs.check-for-new-kernel.outputs.kernel-version }}
       proxmox-version: ${{ needs.check-for-new-kernel.outputs.proxmox-version }}
