@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         branch: ['master', 'pve-kernel-5.15']
-    uses: ./.github/workflows/on-new-pve-kernel-releases.yml
+    uses: ./.github/workflows/new-pve-kernel-release-check.yml
     with:
       branch: ${{ matrix.branch }}
     secrets:

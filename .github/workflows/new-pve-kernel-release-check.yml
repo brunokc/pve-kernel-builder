@@ -97,7 +97,7 @@ jobs:
     name: Build new kernel
     needs: check-for-new-kernel
     if: needs.check-for-new-kernel.outputs.new-kernel-available == 'true'
-    uses: ./.github/workflows/build-pve-kernel-container.yml
+    uses: ./.github/workflows/build-pve-kernel.yml
     with:
       branch: ${{ inputs.branch }}
 
@@ -105,7 +105,7 @@ jobs:
     name: Release new kernel
     needs: [check-for-new-kernel, build-kernel]
     if: needs.build-kernel.outputs.build-successful == 'true'
-    uses: ./.github/workflows/release.yml
+    uses: ./.github/workflows/release-kernel.yml
     with:
       token: ${{ env.TOKEN }}
       artifact-name: ${{ needs.build-kernel.outputs.artifacts-name }}
