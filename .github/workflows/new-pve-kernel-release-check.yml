@@ -1,4 +1,4 @@
-name: Check version on new pve-kernel releases
+name: Check for new PVE kernel release
 
 on:
   workflow_dispatch:
@@ -25,7 +25,7 @@ env:
 
 jobs:
   check-for-new-kernel:
-    name: Check for new release
+    name: Check for new kernel release
     runs-on: ubuntu-latest
     #if: github.event.repository.owner.id == github.event.sender.id
     outputs:
@@ -48,12 +48,12 @@ jobs:
       with:
         token: ${{ env.TOKEN }}
 
-    - name: Initialization environment
+    - name: Initialize environment
       run: |
         sudo -E apt-get update
         sudo -E apt install -y curl
 
-    - name: Check for updates
+    - name: Check for latest kernel version
       id: check-version
       run: |
         config_path='${{ github.workspace }}/config/${{ inputs.branch }}/version'
@@ -82,7 +82,7 @@ jobs:
         fi
         rm -f shortlog.html
 
-    - name: Commit and Push changes
+    - name: Save new kernel version
       continue-on-error: true
       if: steps.check-version.outputs.status == 'needs-update'
       run: |
@@ -94,7 +94,7 @@ jobs:
         git push
 
   build-kernel:
-    name: Call build kernel workflow
+    name: Build new kernel
     needs: check-for-new-kernel
     if: needs.check-for-new-kernel.outputs.new-kernel-available == 'true'
     uses: ./.github/workflows/build-pve-kernel-container.yml
@@ -102,7 +102,7 @@ jobs:
       branch: ${{ inputs.branch }}
 
   release-new-kernel:
-    name: Release new PVE kernels
+    name: Release new kernel
     needs: [check-for-new-kernel, build-kernel]
     if: needs.build-kernel.outputs.build-successful == 'true'
     uses: ./.github/workflows/release.yml

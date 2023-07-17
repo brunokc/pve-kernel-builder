@@ -1,4 +1,4 @@
-name: Check for new pve-kernel releases
+name: Trigger new pve-kernel release check
 
 on:
   workflow_dispatch:

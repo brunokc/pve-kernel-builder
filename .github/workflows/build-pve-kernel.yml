@@ -1,4 +1,4 @@
-name: Build pve-kernel (in container)
+name: Build pve-kernel
 
 on:
   workflow_dispatch:
@@ -72,7 +72,7 @@ env:
 
 jobs:
   build:
-    name: Build pve kernel
+    name: Build PVE kernel
     runs-on: ${{ inputs.runner }}
     if: github.event.repository.owner.id == github.event.sender.id
     outputs:
