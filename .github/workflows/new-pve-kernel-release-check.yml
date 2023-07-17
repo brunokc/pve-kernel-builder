@@ -105,9 +105,9 @@ jobs:
     name: Release new kernel
     needs: [check-for-new-kernel, build-kernel]
     if: needs.build-kernel.outputs.build-successful == 'true'
+    secrets: inherit
     uses: ./.github/workflows/release-kernel.yml
     with:
-      token: ${{ env.TOKEN }}
       artifact-name: ${{ needs.build-kernel.outputs.artifacts-name }}
       kernel-version: ${{ needs.check-for-new-kernel.outputs.kernel-version }}
       proxmox-version: ${{ needs.check-for-new-kernel.outputs.proxmox-version }}
