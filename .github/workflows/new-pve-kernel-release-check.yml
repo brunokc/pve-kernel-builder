@@ -14,6 +14,10 @@ on:
         description: 'Branch to check for'
         type: string
         required: true
+      save-new-version:
+        description: 'Should new detected config be saved?'
+        type: boolean
+        default: true
     secrets:
       token:
         description: 'Token used in privileged operations'
@@ -84,7 +88,7 @@ jobs:
 
     - name: Save new kernel version
       continue-on-error: true
-      if: steps.check-version.outputs.status == 'needs-update'
+      if: inputs.save-new-version && steps.check-version.outputs.status == 'needs-update'
       run: |
         git config --local user.email "github-actions@github.com"
         git config --local user.name "Github Actions"
@@ -103,7 +107,7 @@ jobs:
           echo "New kernel available: ${{ needs.check-for-new-kernel.outputs.new-kernel-available }}"
 
   test-build-kernel:
-    name: Pre-build new kernel
+    name: TestJob -- Pre-build new kernel
     needs: check-for-new-kernel
     #if: needs.check-for-new-kernel.outputs.new-kernel-available == true
     uses: ./.github/workflows/test-job.yml
