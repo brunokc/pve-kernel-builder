@@ -101,7 +101,15 @@ jobs:
       - name: Print new-kernel-available value
         run: |
           echo "New kernel available: ${{ needs.check-for-new-kernel.outputs.new-kernel-available }}"
-      
+
+  test-build-kernel:
+    name: Pre-build new kernel
+    needs: check-for-new-kernel
+    #if: needs.check-for-new-kernel.outputs.new-kernel-available == true
+    uses: ./.github/workflows/test-job.yml
+    with:
+      new-kernel-available: ${{ needs.check-for-new-kernel.outputs.new-kernel-available }}
+
   build-kernel:
     name: Build new kernel
     needs: check-for-new-kernel
