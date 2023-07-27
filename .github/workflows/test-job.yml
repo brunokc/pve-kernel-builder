@@ -11,9 +11,9 @@ env:
 
 jobs:
   pre-build-kernel:
-    name: Pre-build new kernel
+    name: TestJob -- Pre-build new kernel
     runs-on: ubuntu-latest
     steps:
-      - name: Print new-kernel-available value
+      - name: TestJob -- Print new-kernel-available value
         run: |
           echo "New kernel available: ${{ inputs.new-kernel-available }}"
