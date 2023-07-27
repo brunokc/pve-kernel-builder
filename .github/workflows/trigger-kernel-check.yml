@@ -2,6 +2,12 @@ name: Trigger new pve-kernel release check
 
 on:
   workflow_dispatch:
+    inputs:
+      save-new-version:
+        description: 'Should new detected config be saved?'
+        type: boolean
+        default: true
+        required: false
   schedule:
     - cron: '45 2 * * *' # Every day at 2:45AM UTC
 
@@ -17,6 +23,7 @@ jobs:
     uses: ./.github/workflows/new-pve-kernel-release-check.yml
     with:
       branch: ${{ matrix.branch }}
+      save-new-version: ${{ inputs.save-new-version }}
     secrets:
       token: ${{ secrets.PAT }}
     permissions:
