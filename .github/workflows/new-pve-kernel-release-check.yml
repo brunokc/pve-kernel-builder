@@ -7,6 +7,10 @@ on:
         description: 'Branch to check for'
         type: string
         required: true
+      save-new-version:
+        description: 'Should new detected version be saved?'
+        type: boolean
+        default: true        
 
   workflow_call:
     inputs:
@@ -15,7 +19,7 @@ on:
         type: string
         required: true
       save-new-version:
-        description: 'Should new detected config be saved?'
+        description: 'Should new detected version be saved?'
         type: boolean
         default: true
     secrets:
