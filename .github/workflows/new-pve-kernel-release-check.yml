@@ -113,7 +113,6 @@ jobs:
   test-build-kernel:
     name: TestJob -- Pre-build new kernel
     needs: check-for-new-kernel
-    #if: needs.check-for-new-kernel.outputs.new-kernel-available == true
     uses: ./.github/workflows/test-job.yml
     with:
       new-kernel-available: ${{ needs.check-for-new-kernel.outputs.new-kernel-available }}
@@ -121,7 +120,7 @@ jobs:
   build-kernel:
     name: Build new kernel
     needs: check-for-new-kernel
-    if: needs.check-for-new-kernel.outputs.new-kernel-available == true
+    if: !cancelled() && !failure() && needs.check-for-new-kernel.outputs.new-kernel-available == 'true'
     uses: ./.github/workflows/build-pve-kernel.yml
     with:
       branch: ${{ inputs.branch }}
