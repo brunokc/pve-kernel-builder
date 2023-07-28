@@ -120,7 +120,7 @@ jobs:
   build-kernel:
     name: Build new kernel
     needs: check-for-new-kernel
-    if: !cancelled() && !failure() && needs.check-for-new-kernel.outputs.new-kernel-available == 'true'
+    if: ${{ !cancelled() && !failure() && needs.check-for-new-kernel.outputs.new-kernel-available }}
     uses: ./.github/workflows/build-pve-kernel.yml
     with:
       branch: ${{ inputs.branch }}
