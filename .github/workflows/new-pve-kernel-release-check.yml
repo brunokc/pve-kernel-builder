@@ -10,7 +10,7 @@ on:
       save-new-version:
         description: 'Should new detected version be saved?'
         type: boolean
-        default: true        
+        default: true
 
   workflow_call:
     inputs:
@@ -120,7 +120,7 @@ jobs:
   build-kernel:
     name: Build new kernel
     needs: check-for-new-kernel
-    if: ${{ !cancelled() && !failure() && needs.check-for-new-kernel.outputs.new-kernel-available == 'true' }}
+    if: ${{ !cancelled() && !failure() && needs.check-for-new-kernel.outputs.new-kernel-available }}
     uses: ./.github/workflows/build-pve-kernel.yml
     with:
       branch: ${{ inputs.branch }}
