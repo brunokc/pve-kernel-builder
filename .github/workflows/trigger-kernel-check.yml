@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       save-new-version:
-        description: 'Should new detected config be saved?'
+        description: 'Save new detected version'
         type: boolean
         default: true
         required: false
