@@ -111,18 +111,32 @@ jobs:
 
   save-new-kernel-version:
     name: Save new kernel version
-    needs: build-kernel
+    runs-on: ubuntu-latest
+    needs: [check-for-new-kernel, build-kernel]
     if: inputs.save-new-version && needs.build-kernel.outputs.build-successful == 'true'
     permissions:
       contents: write
     steps:
+    steps:
+    - name: Set Git token (if needed)
+      if: env.TOKEN == ''
+      env:
+        TOK: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        echo "TOKEN=${TOK}" > $GITHUB_ENV
+
+    - name: Checkout Sources
+      uses: actions/checkout@main
+      with:
+        token: ${{ env.TOKEN }}
+
     - name: Commit new kernel version
       run: |
         git config --local user.email "github-actions@github.com"
         git config --local user.name "Github Actions"
         git pull
         git add config/**
-        git commit -m 'Update version for branch ${{ inputs.branch }} to ${{ steps.check-version.outputs.kernel-version }}'
+        git commit -m 'Update kernel version for branch ${{ inputs.branch }} to ${{ needs.check-for-new-kernel.outputs.kernel-version }}'
         git push
 
   release-new-kernel:
