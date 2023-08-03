@@ -40,8 +40,6 @@ jobs:
       new-kernel-available: ${{ steps.check-version.outputs.status == 'needs-update' }}
       kernel-version: ${{ steps.check-version.outputs.kernel-version }}
       proxmox-version: ${{ steps.check-version.outputs.proxmox-version }}
-    permissions:
-      contents: write
 
     steps:
     - name: Set Git token (if needed)
@@ -116,7 +114,6 @@ jobs:
     if: inputs.save-new-version && needs.build-kernel.outputs.build-successful == 'true'
     permissions:
       contents: write
-    steps:
     steps:
     - name: Set Git token (if needed)
       if: env.TOKEN == ''
