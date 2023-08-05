@@ -144,7 +144,9 @@ jobs:
     - name: Save new built kernel version
       run: |
         version_built_file_path='${{ github.workspace }}/config/${{ inputs.branch }}/version_built'
-        sudo echo -e "version:\n  proxmox: ${proxmox_ver}\n  kernel: ${abi_ver}" > ${version_built_file_path}
+        sudo echo -e "version:" > ${version_built_file_path}
+        sudo echo -e "  proxmox: ${{ needs.check-for-new-kernel.outputs.proxmox-version }}" >> ${version_built_file_path}
+        sudo echo -e "  kernel: ${{ needs.check-for-new-kernel.outputs.kernel-version }}" >> ${version_built_file_path}
         git config --local user.email "github-actions@github.com"
         git config --local user.name "Github Actions"
         git pull
