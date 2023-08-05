@@ -24,7 +24,7 @@ jobs:
     uses: ./.github/workflows/new-pve-kernel-release-check.yml
     with:
       branch: ${{ matrix.branch }}
-      save-new-version: ${{ inputs.save-new-version }}
+      save-new-version: ${{ inputs.save-new-version != '' && inputs.save-new-kernel || true }}
     secrets:
       token: ${{ secrets.PAT }}
     permissions:

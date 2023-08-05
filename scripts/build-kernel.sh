@@ -16,7 +16,7 @@ echo Exporting artifacts...
 mkdir -p $OUTPUT_DIR/artifacts
 cp *.deb $OUTPUT_DIR/artifacts
 
-for d in build pve-kernel-*; do
+for d in build pve-kernel-* proxmox-kernel-*; do
     if [[ -d $d ]]; then
         echo "Exporting abi files from $d to $OUTPUT_DIR..."
         cp $d/abi* $OUTPUT_DIR

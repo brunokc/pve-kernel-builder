@@ -30,6 +30,8 @@ on:
 env:
   DEBIAN_FRONTEND: noninteractive
   TOKEN: ${{ secrets.token }}
+  VERSION_AVAILABLE_FILE_PATH: '${{ github.workspace }}/config/${{ inputs.branch }}/version_available'
+  VERSION_BUILT_FILE_PATH: '${{ github.workspace }}/config/${{ inputs.branch }}/version_built'
 
 jobs:
   check-for-new-kernel:
@@ -62,12 +64,11 @@ jobs:
     - name: Check for latest kernel version
       id: check-version
       run: |
-        config_path='${{ github.workspace }}/config/${{ inputs.branch }}/version'
         cur_abi_ver=""
-        if [[ -e ${config_path} ]]; then
-            cur_abi_ver=`yq .version.kernel ${config_path}`
+        if [[ -e ${VERSION_AVAILABLE_FILE_PATH} ]]; then
+            cur_abi_ver=`yq .version.kernel ${VERSION_AVAILABLE_FILE_PATH}`
         fi
-        echo "Current cached kernel version for branch ${{ inputs.branch }}: ${cur_abi_ver}"
+        echo "Current cached kernel ABI version for branch ${{ inputs.branch }}: ${cur_abi_ver}"
         proxmox_ver=`curl -s "https://git.proxmox.com/?p=pve-kernel-meta.git;a=shortlog;h=refs/heads/${{ inputs.branch }}" | \
             grep -oP "bump version to \K[^<]*" | head -n 1`
         url="https://git.proxmox.com/?p=pve-kernel.git;a=shortlog;h=refs/heads/${{ inputs.branch }}"
@@ -76,28 +77,41 @@ jobs:
         abi_ver=`grep -oP "update ABI file for \K[^<,]+" shortlog.html | head -n 1`
         #kernel_ver="pve-kernel-${abi_ver}-${ver}"
         if [[ ${abi_ver} == ${cur_abi_ver} ]]; then
-            echo "Kernel ABI version ${abi_ver} for branch ${{ inputs.branch }} is up to date. Nothing to do."
-            echo "status=up-to-date" >> $GITHUB_OUTPUT
+            echo "Kernel ABI version ${abi_ver} for branch ${{ inputs.branch }} is up to date. Checking latest built kernel..."
+            built_abi_ver=""
+            if [[ -e ${VERSION_BUILT_FILE_PATH} ]]; then
+                built_abi_ver=`yq .version.kernel ${VERSION_BUILT_FILE_PATH}`
+            fi
+            echo "Current built kernel version for branch ${{ inputs.branch }}: ${built_abi_ver}"
+            if [[ ${abi_ver} == ${built_abi_ver} ]]; then
+                echo "Built kernel ABI version ${abi_ver} for branch ${{ inputs.branch }} is up to date. Nothing to do."
+                echo "status=up-to-date" >> $GITHUB_OUTPUT
+            else
+                echo "Built kernel ABI version and available kernel ABI version are out of sync. Will trigger a build..."
+                echo "kernel-version=${abi_ver}" >> $GITHUB_OUTPUT
+                echo "proxmox-version=${proxmox_ver}" >> $GITHUB_OUTPUT
+                echo "status=needs-update" >> $GITHUB_OUTPUT
+            fi
         else
-            echo "New kernel ABI version avaiable for branch ${{ inputs.branch }}: ${abi_ver}. Will update repository."
-            mkdir -p `dirname ${config_path}`
-            sudo echo -e "version:\n  proxmox: ${proxmox_ver}\n  kernel: ${abi_ver}" > ${config_path}
+            echo "New kernel ABI version avaiable for branch ${{ inputs.branch }}: ${abi_ver}. Will trigger a build."
+            mkdir -p `dirname ${VERSION_AVAILABLE_FILE_PATH}`
+            sudo echo -e "version:\n  proxmox: ${proxmox_ver}\n  kernel: ${abi_ver}" > ${VERSION_AVAILABLE_FILE_PATH}
             echo "kernel-version=${abi_ver}" >> $GITHUB_OUTPUT
             echo "proxmox-version=${proxmox_ver}" >> $GITHUB_OUTPUT
             echo "status=needs-update" >> $GITHUB_OUTPUT
         fi
         rm -f shortlog.html
 
-    #- name: Save new kernel version
-    #  continue-on-error: true
-    #  if: inputs.save-new-version && steps.check-version.outputs.status == 'needs-update'
-    #  run: |
-    #    git config --local user.email "github-actions@github.com"
-    #    git config --local user.name "Github Actions"
-    #    git pull
-    #    git add config/**
-    #    git commit -m 'Update version for branch ${{ inputs.branch }} to ${{ steps.check-version.outputs.kernel-version }}'
-    #    git push
+    - name: Save new available kernel version
+      continue-on-error: true
+      if: inputs.save-new-version && steps.check-version.outputs.status == 'needs-update'
+      run: |
+        git config --local user.email "github-actions@github.com"
+        git config --local user.name "Github Actions"
+        git pull
+        git add config/**
+        git commit -m 'Update available kernel version for branch ${{ inputs.branch }} to ${{ steps.check-version.outputs.kernel-version }}'
+        git push
 
   build-kernel:
     name: Build new kernel
@@ -127,13 +141,15 @@ jobs:
       with:
         token: ${{ env.TOKEN }}
 
-    - name: Commit new kernel version
+    - name: Save new built kernel version
       run: |
+        version_built_file_path='${{ github.workspace }}/config/${{ inputs.branch }}/version_built'
+        sudo echo -e "version:\n  proxmox: ${proxmox_ver}\n  kernel: ${abi_ver}" > ${version_built_file_path}
         git config --local user.email "github-actions@github.com"
         git config --local user.name "Github Actions"
         git pull
         git add config/**
-        git commit -m 'Update kernel version for branch ${{ inputs.branch }} to ${{ needs.check-for-new-kernel.outputs.kernel-version }}'
+        git commit -m 'Update built kernel version for branch ${{ inputs.branch }} to ${{ needs.check-for-new-kernel.outputs.kernel-version }}'
         git push
 
   release-new-kernel:
