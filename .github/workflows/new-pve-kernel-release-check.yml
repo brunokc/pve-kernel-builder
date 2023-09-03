@@ -104,7 +104,7 @@ jobs:
 
     - name: Save new available kernel version
       continue-on-error: true
-      if: inputs.save-new-version && steps.check-version.outputs.status == 'save-kernel-version-and-build'
+      if: inputs.save-new-version == 'true' && steps.check-version.outputs.status == 'save-kernel-version-and-build'
       run: |
         git config --local user.email "github-actions@github.com"
         git config --local user.name "Github Actions"
@@ -125,7 +125,7 @@ jobs:
     name: Save new kernel version
     runs-on: ubuntu-latest
     needs: [check-for-new-kernel, build-kernel]
-    if: inputs.save-new-version && needs.build-kernel.outputs.build-successful == 'true'
+    if: inputs.save-new-version == 'true' && needs.build-kernel.outputs.build-successful == 'true'
     permissions:
       contents: write
     steps:
