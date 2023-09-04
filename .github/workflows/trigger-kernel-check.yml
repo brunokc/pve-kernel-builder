@@ -23,6 +23,8 @@ jobs:
   debug:
     name: Debug - print internal state
     runs-on: ubuntu-latest
+    outputs:
+      save-new-version: ${{ env.SAVE_NEW_VERSION }}
     steps:
       - name: print state
         run: |
@@ -31,6 +33,7 @@ jobs:
           
   check-for-new-kernel:
     name: Check for new release for each branch
+    needs: debug
     strategy:
       fail-fast: false
       matrix:
@@ -38,7 +41,7 @@ jobs:
     uses: ./.github/workflows/new-pve-kernel-release-check.yml
     with:
       branch: ${{ matrix.branch }}
-      save-new-version: ${{ env.SAVE_NEW_VERSION }}
+      save-new-version: ${{ needs.debug.outputs.save-new-version }}
     secrets:
       token: ${{ secrets.PAT }}
     permissions:
