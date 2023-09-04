@@ -10,7 +10,7 @@ on:
         required: false
   schedule:
     - cron: '45 2 * * *' # Every day at 2:45AM UTC / 7:45PM PST
-    - cron: '50 5 * * *'
+    - cron: '15 6 * * *'
 
 env:
   DEBIAN_FRONTEND: noninteractive
