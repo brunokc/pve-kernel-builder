@@ -9,8 +9,8 @@ on:
         default: true
         required: false
   schedule:
-    - cron: '45 2 * * *' # Every day at 2:45AM UTC
-    - cron: '35 3 * * *'
+    - cron: '45 2 * * *' # Every day at 2:45AM UTC / 7:45PM PST
+    - cron: '35 4 * * *'
 
 env:
   DEBIAN_FRONTEND: noninteractive
