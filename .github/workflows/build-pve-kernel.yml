@@ -56,6 +56,10 @@ on:
         required: false
         type: boolean
         default: true
+      #new-kernel-available:
+      #  description: 'WORKAROUND: tell workflow wether to actually do its job. if statement on caller side is not working.'
+      #  type: boolean
+      #  required: true
     outputs:
       build-successful:
         description: 'Build was successful'
@@ -74,7 +78,7 @@ jobs:
   build:
     name: Build PVE kernel
     runs-on: ${{ inputs.runner }}
-    if: github.event.repository.owner.id == github.event.sender.id
+    #if: github.event.repository.owner.id == github.event.sender.id
     outputs:
       build-successful: ${{ steps.docker-build.outputs.status == 'success' }}
       kernel-version: ${{ steps.kernel-version.outputs.version }}
@@ -82,6 +86,11 @@ jobs:
       artifacts-name: ${{ steps.kernel-version.outputs.version }}
 
     steps:
+    - name: Debug
+      run: |
+        echo "github.event.repository.owner.id: ${{ github.event.repository.owner.id }}"
+        echo "github.event.sender.id: ${{ github.event.sender.id }}"
+
     - name: Checkout
       uses: actions/checkout@master
 
