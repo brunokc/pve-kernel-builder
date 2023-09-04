@@ -102,6 +102,11 @@ jobs:
         fi
         rm -f shortlog.html
 
+    - name: Debug - print internal state
+      run: |
+        echo "inputs.save-new-version: ${{ inputs.save-new-version }}"
+        echo "steps.check-version.outputs.status: ${{ steps.check-version.outputs.status }}"
+        
     - name: Save new available kernel version
       continue-on-error: true
       if: inputs.save-new-version == 'true' && steps.check-version.outputs.status == 'save-kernel-version-and-build'
