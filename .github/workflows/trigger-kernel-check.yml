@@ -14,14 +14,14 @@ on:
 
 env:
   DEBIAN_FRONTEND: noninteractive
-  SAVE_NEW_VERSION: "${{ inputs.save-new-version != '' && inputs.save-new-kernel || true }}"
+  SAVE_NEW_VERSION: "${{ inputs.save-new-version != '' && inputs.save-new-version || true }}"
 
 jobs:
   set-state:
     name: Set internal state
     runs-on: ubuntu-latest
     outputs:
-      save-new-version: ${{ env.SAVE_NEW_VERSION }}
+      save-new-version: ${{ env.SAVE_NEW_VERSION == 'true' }}
     steps:
       - name: Print state
         run: |
@@ -38,7 +38,7 @@ jobs:
     uses: ./.github/workflows/new-pve-kernel-release-check.yml
     with:
       branch: ${{ matrix.branch }}
-      save-new-version: ${{ needs.set-state.outputs.save-new-version == 'true' }}
+      save-new-version: ${{ needs.set-state.outputs.save-new-version }}
     secrets:
       token: ${{ secrets.PAT }}
     permissions:
