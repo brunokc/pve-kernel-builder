@@ -10,11 +10,25 @@ on:
         required: false
   schedule:
     - cron: '45 2 * * *' # Every day at 2:45AM UTC
+    - cron: '11 2 * * *'
+    - cron: '15 2 * * *'
+    - cron: '20 2 * * *'
+    - cron: '25 2 * * *'
 
 env:
   DEBIAN_FRONTEND: noninteractive
+  SAVE_NEW_VERSION: ${{ inputs.save-new-version != '' && inputs.save-new-kernel || true }}
 
 jobs:
+  debug:
+    name: Debug - print internal state
+    runs-on: ubuntu-latest
+    steps:
+      - name: print state
+        run: |
+          echo "inputs.save-new-version: |${{ inputs.save-new-version }}|"
+          echo "SAVE_NEW_VERSION: |${{ env.SAVE_NEW_VERSION }}|"
+          
   check-for-new-kernel:
     name: Check for new release for each branch
     strategy:
@@ -24,7 +38,7 @@ jobs:
     uses: ./.github/workflows/new-pve-kernel-release-check.yml
     with:
       branch: ${{ matrix.branch }}
-      save-new-version: ${{ inputs.save-new-version != '' && inputs.save-new-kernel || true }}
+      save-new-version: ${{ env.SAVE_NEW_VERSION }}
     secrets:
       token: ${{ secrets.PAT }}
     permissions:
