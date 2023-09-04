@@ -10,11 +10,11 @@ on:
         required: false
   schedule:
     - cron: '45 2 * * *' # Every day at 2:45AM UTC
-    - cron: '55 2 * * *'
+    - cron: '05 3 * * *'
 
 env:
   DEBIAN_FRONTEND: noninteractive
-  SAVE_NEW_VERSION: '${{ inputs.save-new-version != '' && inputs.save-new-kernel || true }}'
+  SAVE_NEW_VERSION: "${{ inputs.save-new-version != '' && inputs.save-new-kernel || true }}"
 
 jobs:
   set-state:
