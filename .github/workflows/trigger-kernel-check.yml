@@ -10,7 +10,7 @@ on:
         required: false
   schedule:
     - cron: '45 2 * * *' # Every day at 2:45AM UTC / 7:45PM PST
-    - cron: '15 6 * * *'
+    - cron: '50 19 * * *'
 
 env:
   DEBIAN_FRONTEND: noninteractive
@@ -27,7 +27,7 @@ jobs:
         run: |
           echo "inputs.save-new-version: ${{ inputs.save-new-version }}"
           echo "SAVE_NEW_VERSION: ${{ env.SAVE_NEW_VERSION }}"
-          
+
   check-for-new-kernel:
     name: Check for new release for each branch
     needs: set-state
