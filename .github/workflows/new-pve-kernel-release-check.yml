@@ -113,6 +113,38 @@ jobs:
         git commit -m 'Update available kernel version for branch ${{ inputs.branch }} to ${{ steps.check-version.outputs.kernel-version }}'
         git push
 
+    - name: Send new kernel version email
+      if: steps.check-version.outputs.status == 'save-kernel-version-and-build'
+      uses: dawidd6/action-send-mail@v3
+      with:
+        # Specify connection via URL (replaces server_address, server_port, secure,
+        # username and password)
+        #
+        # Format:
+        #
+        #  * smtp://user:password@server:port
+        #  * smtp+starttls://user:password@server:port
+        connection_url: ${{ secrets.EMAIL_NOTIFICATION_CONNECTION }}
+        # Required mail server address if not connection_url:
+        subject: [pve-kernel-builder] New kernel version detected
+        # Required recipients' addresses:
+        to: ${{ secrets.EMAIL_NOTIFICATION_RECIPIENTS }}
+        # Required sender full name (address can be skipped):
+        from: GitHub Workflow from pve-kernel-builder
+        # Optional plain body:
+        body: |
+          New Proxmox kernel version ${{ steps.check-version.outputs.kernel-version }} \
+          (Proxmox version ${{ steps.check-version.outputs.proxmox-version }}) detected!
+
+          Check the workflow at repository ${{ github.repository}} by visiting \
+          https://github.com/brunokc/pve-kernel-builder/actions/workflows/trigger-kernel-check.yml.
+        # Optional converting Markdown to HTML (set content_type to text/html too):
+        #convert_markdown: true
+        # Optional attachments:
+        #attachments: attachments.zip,git.diff,./dist/static/*.js
+        # Optional priority: 'high', 'normal' (default) or 'low'
+        priority: high
+
   debug-state:
     name: Debug state
     runs-on: ubuntu-latest
