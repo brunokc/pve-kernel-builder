@@ -131,7 +131,7 @@ jobs:
   build-kernel:
     name: Build new kernel
     needs: check-for-new-kernel
-    if: needs.check-for-new-kernel.outputs.new-kernel-available
+    if: needs.check-for-new-kernel.outputs.new-kernel-available == 'true'
     uses: ./.github/workflows/build-pve-kernel.yml
     with:
       branch: ${{ inputs.branch }}
@@ -140,7 +140,7 @@ jobs:
     name: Save new kernel version
     runs-on: ubuntu-latest
     needs: [check-for-new-kernel, build-kernel]
-    if: inputs.save-new-version && needs.build-kernel.outputs.build-successful
+    if: inputs.save-new-version && needs.build-kernel.outputs.build-successful == 'true'
     permissions:
       contents: write
     steps:
@@ -172,7 +172,7 @@ jobs:
   release-new-kernel:
     name: Release new kernel
     needs: [check-for-new-kernel, build-kernel]
-    if: needs.build-kernel.outputs.build-successful
+    if: needs.build-kernel.outputs.build-successful == 'true'
     secrets: inherit
     uses: ./.github/workflows/release-kernel.yml
     with:
