@@ -10,7 +10,7 @@ Latest from [Proxmox](https://git.proxmox.com/):
 <div align="center">
 <strong><a href="https://github.com/brunokc/pve-kernel-builder/releases">Latest releases</a></strong>
 <br>
-<a href="https://github.com/brunokc/pve-kernel-builder/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/brunokc/pve-kernel-builder?display_name=release&sort=date"></a>
+<a href="https://github.com/brunokc/pve-kernel-builder/releases"><img alt="Latest 6.x release" src="https://img.shields.io/github/v/release/brunokc/pve-kernel-builder?display_name=release&sort=date&filter=*6.*"></a>
 <br>
 <a href="https://github.com/brunokc/pve-kernel-builder/releases"><img alt="Latest 5.15 release" src="https://img.shields.io/github/v/release/brunokc/pve-kernel-builder?display_name=release&sort=date&filter=*5.15*"></a>
 <br>
