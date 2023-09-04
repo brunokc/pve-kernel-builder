@@ -37,7 +37,6 @@ jobs:
   check-for-new-kernel:
     name: Check for new kernel release
     runs-on: ubuntu-latest
-    #if: github.event.repository.owner.id == github.event.sender.id
     outputs:
       new-kernel-available: ${{ steps.check-version.outputs.status != 'up-to-date' }}
       kernel-version: ${{ steps.check-version.outputs.kernel-version }}
@@ -76,6 +75,7 @@ jobs:
         ver=`grep -oP "bump version to \K[^<,]+" shortlog.html | head -n 1`
         abi_ver=`grep -oP "update ABI file for \K[^<,]+" shortlog.html | head -n 1`
         #kernel_ver="pve-kernel-${abi_ver}-${ver}"
+        echo "Current kernel version: ${ver} (ABI version: ${abi_ver})"
         if [[ ${abi_ver} == ${cur_abi_ver} ]]; then
             echo "Current kernel ABI version ${abi_ver} for branch ${{ inputs.branch }} is up to date. Checking latest built kernel..."
             built_abi_ver=""
@@ -102,12 +102,6 @@ jobs:
         fi
         rm -f shortlog.html
 
-    - name: Debug - print internal state
-      run: |
-        echo "inputs.save-new-version: ${{ inputs.save-new-version }}"
-        echo "steps.check-version.outputs.status: ${{ steps.check-version.outputs.status }}"
-        echo "new-kernel-available: ${{ steps.check-version.outputs.status != 'up-to-date' }}"
-        
     - name: Save new available kernel version
       continue-on-error: true
       if: inputs.save-new-version && steps.check-version.outputs.status == 'save-kernel-version-and-build'
