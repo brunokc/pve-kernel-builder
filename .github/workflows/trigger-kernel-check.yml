@@ -10,23 +10,24 @@ on:
         required: false
   schedule:
     - cron: '45 2 * * *' # Every day at 2:45AM UTC / 7:45PM PST
-    - cron: '00 20 * * *'
 
 env:
   DEBIAN_FRONTEND: noninteractive
+  # save-new-version will be set in workflow_dispatch, but not when launched from a schedule
   SAVE_NEW_VERSION: "${{ inputs.save-new-version != '' && inputs.save-new-version || true }}"
 
 jobs:
   set-state:
-    name: Set internal state
+    # Workaround: can't use env in job.with. Copy env to job.output instead and access it from check-for-new-kernel
+    name: Set SAVE_NEW_VERSION
     runs-on: ubuntu-latest
     outputs:
       save-new-version: ${{ env.SAVE_NEW_VERSION }}
     steps:
-      - name: Print state
-        run: |
-          echo "inputs.save-new-version: ${{ inputs.save-new-version }}"
-          echo "SAVE_NEW_VERSION: ${{ env.SAVE_NEW_VERSION }}"
+    - name: Print state
+      run: |
+        echo "inputs.save-new-version: ${{ inputs.save-new-version }}"
+        echo "SAVE_NEW_VERSION: ${{ env.SAVE_NEW_VERSION }}"
 
   check-for-new-kernel:
     name: Check for new release for each branch
