@@ -21,7 +21,7 @@ jobs:
     name: Set internal state
     runs-on: ubuntu-latest
     outputs:
-      save-new-version: ${{ env.SAVE_NEW_VERSION == 'true' }}
+      save-new-version: ${{ env.SAVE_NEW_VERSION }}
     steps:
       - name: Print state
         run: |
@@ -38,7 +38,7 @@ jobs:
     uses: ./.github/workflows/new-pve-kernel-release-check.yml
     with:
       branch: ${{ matrix.branch }}
-      save-new-version: ${{ needs.set-state.outputs.save-new-version }}
+      save-new-version: ${{ needs.set-state.outputs.save-new-version == 'true' }}
     secrets:
       token: ${{ secrets.PAT }}
     permissions:
