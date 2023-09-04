@@ -10,7 +10,7 @@ on:
         required: false
   schedule:
     - cron: '45 2 * * *' # Every day at 2:45AM UTC
-    - cron: '05 3 * * *'
+    - cron: '20 3 * * *'
 
 env:
   DEBIAN_FRONTEND: noninteractive
@@ -38,7 +38,7 @@ jobs:
     uses: ./.github/workflows/new-pve-kernel-release-check.yml
     with:
       branch: ${{ matrix.branch }}
-      save-new-version: ${{ needs.set-state.outputs.save-new-version }}
+      save-new-version: ${{ needs.set-state.outputs.save-new-version == 'true' }}
     secrets:
       token: ${{ secrets.PAT }}
     permissions:
