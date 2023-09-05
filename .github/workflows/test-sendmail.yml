@@ -37,4 +37,4 @@ jobs:
           [workflow](https://github.com/${{ github.repository }}/actions/workflows/trigger-kernel-check.yml).
         convert_markdown: true
         # Optional priority: 'high', 'normal' (default) or 'low'
-        priority: high    - name: Send new kernel version email
+        priority: high
