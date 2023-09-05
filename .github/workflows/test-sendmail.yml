@@ -15,7 +15,6 @@ jobs:
 
     steps:
     - name: Send new kernel version email
-      if: steps.check-version.outputs.status == 'save-kernel-version-and-build'
       uses: dawidd6/action-send-mail@v3
       with:
         # Specify connection via URL (replaces server_address, server_port, secure,
