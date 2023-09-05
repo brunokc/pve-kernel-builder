@@ -30,7 +30,7 @@ jobs:
         # Required recipients' addresses:
         to: ${{ secrets.EMAIL_NOTIFICATION_RECIPIENTS }}
         # Required sender full name (address can be skipped):
-        from: GitHub Workflow from pve-kernel-builder
+        from: GitHub Workflow from pve-kernel-builder <github-no-reply@github.com>
         # Optional plain body:
         body: |
           New Proxmox kernel version ${{ env.KERNEL_VERSION }} \
