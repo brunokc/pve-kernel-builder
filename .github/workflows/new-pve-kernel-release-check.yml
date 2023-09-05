@@ -129,8 +129,8 @@ jobs:
         to: ${{ secrets.EMAIL_NOTIFICATION_RECIPIENTS }}
         from: "GitHub Workflow @ pve-kernel-builder <github-no-reply@github.com>"
         html_body: |
-          New Proxmox kernel version **${{ env.KERNEL_VERSION }}** 
-          (Proxmox version **${{ env.PROXMOX_VERSION }}**) detected!
+          New Proxmox kernel version **${{ steps.check-version.outputs.kernel-version }}** 
+          (Proxmox version **${{ steps.check-version.outputs.proxmox-version }}**) detected!
 
           Check the new version by visiting the 
           [workflow](https://github.com/${{ github.repository }}/actions/workflows/trigger-kernel-check.yml).
