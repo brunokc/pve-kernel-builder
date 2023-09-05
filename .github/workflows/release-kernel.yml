@@ -60,8 +60,8 @@ jobs:
           name: ${{ inputs.artifact-name }}
           path: ./assets
 
-      - name: Create Release Note
-        id: create-release-note
+      - name: Create Release Notes
+        id: create-release-notes
         uses: actions/github-script@v6
         with:
           github-token: ${{ env.TOKEN }}
@@ -80,11 +80,12 @@ jobs:
         with:
           #repository: brunokc/pve-kernel-builder
           name: "Proxmox VE kernel ${{ inputs.kernel-version }}-relaxablermrr (Proxmox VE ${{ inputs.proxmox-version }})"
-          body: ${{ steps.create-release-note.outputs.release-note }}
+          body: ${{ steps.create-release-notes.outputs.release-note }}
           # Note: you'll typically need to create a personal access token
           # with permissions to create releases in the other repo
           #token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           token: ${{ env.TOKEN }}
+          tag_name: ${{ inputs.kernel-version }}
           draft: true
           fail_on_unmatched_files: true
           files: ./assets/*.deb
