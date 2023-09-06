@@ -203,7 +203,7 @@ jobs:
     name: Notify of new kernel release
     runs-on: ubuntu-latest
     needs: [check-for-new-kernel, release-new-kernel]
-    if: needs.release-new-kernel.result == "success"
+    if: needs.release-new-kernel.result == 'success'
     steps:
     - name: Send new kernel version email
       uses: dawidd6/action-send-mail@v3
