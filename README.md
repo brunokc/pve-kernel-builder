@@ -74,8 +74,8 @@ Regardless of how you built the kernel, you'll end up with a few of .deb files.
 To install them you need to:
 
 1. Go to the [releases tab](https://github.com/brunokc/pve-kernel-builder/releases/) and pick appropriate packages
-   - If you don't use your Proxmox machine for building software, you really only need the `pve-kernel-<version>-pve-relaxablermrr_<version>_amd64.deb` file.
 3. Download all applicable `*.deb`s packages to your machine
+   - If you don't use your Proxmox machine for building software, you really only need the `pve-kernel-<version>-pve-relaxablermrr_<version>_amd64.deb` file.
 4. Install the package(s) using `dpkg -i *.deb` in the folder where you downloaded the debs
 5. *(OPTIONAL)* Verify the kernel works with the patch disabled by rebooting and checking if `uname -r` shows a version 
    ending with `-pve-relaxablermrr`
