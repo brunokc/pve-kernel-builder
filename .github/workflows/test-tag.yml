@@ -1,0 +1,45 @@
+name: Test Workflow
+
+on:
+  workflow_dispatch:
+
+env:
+  DEBIAN_FRONTEND: noninteractive
+  KERNEL_VERSION: 5.15.116-1-pve
+  PROXMOX_VERSION: 7.4-6
+
+jobs:
+  test:
+    name: This is a test job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create release tag
+        uses: actions/github-script@v6
+        env:
+          CLIENT_PAYLOAD: ${{ toJSON(github.event.client_payload) }}
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const { sha, releases } = JSON.parse(process.env.CLIENT_PAYLOAD);
+
+            for (const release of releases) {
+                const tagName = `${release.module}/${release.newVersion}`;
+
+                let ref = `refs/tags/${tagName}`;
+                console.log('Tagging', tagName, 'as', sha);
+                //await github.git.createRef({ owner, repo, ref, sha });
+
+                const releaseVersion = `${release.newVersion}`;
+                const module = `${release.module}`;
+
+                try {
+                    ref = "tags/" + module + "/v" + releaseVersion.split(".")[0]
+                    console.log('Updating existing tag', ref, 'as', sha);
+                    //await github.git.updateRef({ owner, repo, ref, sha });
+                }
+                catch {
+                    ref = "refs/tags/" + module + "/v" + releaseVersion.split(".")[0]
+                    console.log('Creating new tag', ref, 'as', sha);
+                    //await github.git.createRef({ owner, repo, ref, sha });
+                }
+            }
