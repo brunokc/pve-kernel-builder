@@ -5,12 +5,10 @@ on:
 
 env:
   DEBIAN_FRONTEND: noninteractive
-  KERNEL_VERSION: 5.15.116-1-pve
-  PROXMOX_VERSION: 7.4-6
 
 jobs:
   test:
-    name: This is a test job
+    name: This is a tag test job
     runs-on: ubuntu-latest
     steps:
       - name: Create release tag
@@ -19,27 +17,20 @@ jobs:
           CLIENT_PAYLOAD: ${{ toJSON(github.event.client_payload) }}
         with:
           script: |
+            const kernelVersion = "6.2.16-99-pve";
+            const proxmoxVersion = "8.0";
+            const tagName = kernelVersion;
+            const taggerName = "Github Actions";
+            const taggerEmail = "github-actions@github.com";
+
+            const message = `PVE kernel ${kernelVersion}-relaxablermrr release (Promox ${proxmoxVersion})`;
+
             const { owner, repo } = context.repo;
-            const { sha, releases } = JSON.parse(process.env.CLIENT_PAYLOAD);
 
-            for (const release of releases) {
-                const tagName = `${release.module}/${release.newVersion}`;
+            # Create tag object. This is only needed for annotated tags
+            await github.git.createTag({ owner, repo, tagName, message, sha,
+              "commit", taggerName, taggerEmail });
 
-                let ref = `refs/tags/${tagName}`;
-                console.log('Tagging', tagName, 'as', sha);
-                //await github.git.createRef({ owner, repo, ref, sha });
-
-                const releaseVersion = `${release.newVersion}`;
-                const module = `${release.module}`;
-
-                try {
-                    ref = "tags/" + module + "/v" + releaseVersion.split(".")[0]
-                    console.log('Updating existing tag', ref, 'as', sha);
-                    //await github.git.updateRef({ owner, repo, ref, sha });
-                }
-                catch {
-                    ref = "refs/tags/" + module + "/v" + releaseVersion.split(".")[0]
-                    console.log('Creating new tag', ref, 'as', sha);
-                    //await github.git.createRef({ owner, repo, ref, sha });
-                }
-            }
+            # Create tag reference
+            const ref = `refs/tags/${tagName}`;
+            await github.git.createRef({ owner, repo, ref, sha });
