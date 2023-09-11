@@ -28,9 +28,11 @@ jobs:
             const { owner, repo } = context.repo;
 
             # Create tag object. This is only needed for annotated tags
-            await github.git.createTag({ owner, repo, tagName, message, sha,
+            console.log(`Creating tag ${tagName} (owner: ${owner}; repo: ${repo}; message: ${message}; sha: ${github.sha}; tagger: ${taggerName}/${taggerEmail})`);
+            await github.git.createTag({ owner, repo, tagName, message, github.sha,
               "commit", taggerName, taggerEmail });
 
             # Create tag reference
             const ref = `refs/tags/${tagName}`;
-            await github.git.createRef({ owner, repo, ref, sha });
+            console.log(`Creating ref for tag ${tagName} (ref: ${ref}; sha: ${github.sha}; tagger: ${taggerName}/${taggerEmail})`);
+            await github.git.createRef({ owner, repo, ref, github.sha });
