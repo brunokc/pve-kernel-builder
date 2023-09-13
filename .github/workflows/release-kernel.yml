@@ -29,9 +29,6 @@ on:
       token:
         description: 'Token used in git operations'
         required: true
-  #push:
-  #  paths:
-  #    - releaseVersion
 
 env:
   TOKEN: ${{ secrets.token }}
@@ -72,6 +69,43 @@ jobs:
             releaseNote = releaseNote.replace(/<PROXMOX_VERSION>/g, '${{ inputs.proxmox-version }}')
             console.log(releaseNote)
             core.setOutput('release-note', releaseNote)
+
+      - name: Create release tag
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const tagName = "${{ inputs.kernel-version }}";
+            const branch = "main";
+            const tagger = {
+              name: "Github Actions",
+              email: "github-actions@github.com"
+            };
+
+            const { owner, repo } = context.repo;
+
+            console.log("Finding out the HEAD sha");
+            let ref = `heads/${branch}`;
+            const head = await github.rest.git.getRef({ owner, repo, ref });
+            const sha = head.data.object.sha;
+
+            const message = "PVE kernel ${{ inputs.kernel-version }}-relaxablermrr release (Proxmox VE ${{ inputs.proxmox-version }})"
+
+            // Create tag object. This is only needed for annotated tags
+            console.log(`Creating tag ${tagName}`);
+            const newTag = await github.rest.git.createTag({
+                owner,
+                repo,
+                tag: tagName,
+                message,
+                object: sha,
+                type: "commit",
+                tagger
+                });
+
+            // Create tag reference
+            ref = `refs/tags/${tagName}`;
+            console.log(`Creating ref for tag ${tagName} (${newTag.data.sha})`);
+            const newRef = await github.rest.git.createRef({ owner, repo, ref, sha: newTag.data.sha });
 
       # Using action-gh-release from https://github.com/softprops/action-gh-release
       - name: Release
