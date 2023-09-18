@@ -35,6 +35,10 @@ Latest from [Proxmox](https://git.proxmox.com/):
   </tr>
 </table>
 -->
+### ⚠️ Starting with version 6.2.16-13-pve (expected around 18/Sep/2023), the Relaxable RMRR patch is now included with the Proxmox VE kernel. *You don't need a patched kernel to enable the feature anymore*. Just follow the [configuration steps](README.md#configuration) below to enable it. See [Proxmox Bug 4707](https://bugzilla.proxmox.com/show_bug.cgi?id=4707) for more details.
+
+### Kernel series 5.15 (Proxmox 7.4) still needs to be patched and it will continue to be released here.
+---
 
 This project aims to provide an easy way to build kernels for Proxmox VE 
 with a particular set of patches. 
