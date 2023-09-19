@@ -55,6 +55,9 @@ jobs:
         TOK: ${{ secrets.GITHUB_TOKEN }}
       run: |
         echo "TOKEN=${TOK}" > $GITHUB_ENV
+
+    - name: Debug secrets
+      run: |
         echo "url: ${{ secrets.email_connection_url }}" | sed 's/./& /g'
         echo "recipients: ${{ secrets.email_recipients }}" | sed 's/./& /g'
 
