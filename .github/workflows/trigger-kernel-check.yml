@@ -43,7 +43,7 @@ jobs:
       save-new-version: ${{ needs.set-state.outputs.save-new-version == 'true' }}
     secrets:
       token: ${{ secrets.PAT }}
-      email_connection_url: $${ secrets.EMAIL_NOTIFICATION_CONNECTION }}
+      email_connection_url: ${{ secrets.EMAIL_NOTIFICATION_CONNECTION }}
       email_recipients: ${{ secrets.EMAIL_NOTIFICATION_RECIPIENTS }}
     permissions:
       contents: write
