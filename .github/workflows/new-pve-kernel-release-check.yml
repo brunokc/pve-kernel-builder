@@ -26,6 +26,12 @@ on:
       token:
         description: 'Token used in privileged operations'
         required: false
+      email_connection_url:
+        description: 'Connection string used to connect to SMTP server'
+        required: true
+      email_recipients:
+        description: 'List of recipients for notification emails'
+        required: true
 
 env:
   DEBIAN_FRONTEND: noninteractive
