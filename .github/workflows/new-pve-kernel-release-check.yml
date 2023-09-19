@@ -124,9 +124,9 @@ jobs:
         #
         #  * smtp://user:password@server:port
         #  * smtp+starttls://user:password@server:port
-        connection_url: ${{ secrets.EMAIL_NOTIFICATION_CONNECTION }}
+        connection_url: ${{ secrets.email_connection_url }}
         subject: "[pve-kernel-builder] New kernel version detected"
-        to: ${{ secrets.EMAIL_NOTIFICATION_RECIPIENTS }}
+        to: ${{ secrets.email_recipients }}
         from: "GitHub Workflow @ pve-kernel-builder <github-no-reply@github.com>"
         html_body: |
           New Proxmox kernel version **${{ steps.check-version.outputs.kernel-version }}** 
@@ -215,9 +215,9 @@ jobs:
         #
         #  * smtp://user:password@server:port
         #  * smtp+starttls://user:password@server:port
-        connection_url: ${{ secrets.EMAIL_NOTIFICATION_CONNECTION }}
+        connection_url: ${{ secrets.email_connection_url }}
         subject: "[pve-kernel-builder] New Release Available for Publishing"
-        to: ${{ secrets.EMAIL_NOTIFICATION_RECIPIENTS }}
+        to: ${{ secrets.email_recipients }}
         from: "GitHub Workflow @ pve-kernel-builder <github-no-reply@github.com>"
         html_body: |
           A new draft release for Proxmox kernel version **${{ needs.check-for-new-kernel.outputs.kernel-version }}**
