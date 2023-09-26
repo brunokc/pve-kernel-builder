@@ -8,7 +8,7 @@ Latest from [Proxmox](https://git.proxmox.com/):
 <img src="https://img.shields.io/badge/dynamic/yaml?color=informational&label=proxmox&query=version.proxmox&url=https%3A%2F%2Fraw.githubusercontent.com%2Fbrunokc%2Fpve-kernel-builder%2Fmain%2Fconfig%2Fpve-kernel-5.15%2Fversion_available"> <sup>with</sup> <img src="https://img.shields.io/badge/dynamic/yaml?color=informational&label=kernel&query=version.kernel&url=https%3A%2F%2Fraw.githubusercontent.com%2Fbrunokc%2Fpve-kernel-builder%2Fmain%2Fconfig%2Fpve-kernel-5.15%2Fversion_available">
 
 <div align="center">
-<strong><a href="https://github.com/brunokc/pve-kernel-builder/releases">Latest releases</a></strong>
+<strong><a href="https://github.com/brunokc/pve-kernel-builder/releases">Latest Patched Kernel Releases</a></strong>
 <br>
 <a href="https://github.com/brunokc/pve-kernel-builder/releases"><img alt="Latest 6.x release" src="https://img.shields.io/github/v/release/brunokc/pve-kernel-builder?display_name=release&sort=date&filter=*6.*"></a>
 <br>
@@ -19,23 +19,7 @@ Latest from [Proxmox](https://git.proxmox.com/):
 
 ---
 
-<!--
-<table>
-  <tr>
-    <td>proxmox</td>
-    <td><img src="https://img.shields.io/badge/dynamic/yaml?color=informational&label=proxmox&query=version.proxmox&url=https%3A%2F%2Fraw.githubusercontent.com%2Fbrunokc%2Fpve-kernel-builder%2Fmain%2Fconfig%2Fmaster%2Fversion"></td>
-  </tr>
-  <tr>
-    <td>master</td>
-    <td><img src="https://img.shields.io/badge/dynamic/yaml?color=informational&label=kernel&query=version.kernel&url=https%3A%2F%2Fraw.githubusercontent.com%2Fbrunokc%2Fpve-kernel-builder%2Fmain%2Fconfig%2Fmaster%2Fversion"></td>
-  </tr>
-  <tr>
-    <td>5.15</td>
-    <td><img src="https://img.shields.io/badge/dynamic/yaml?color=informational&label=kernel&query=version.kernel&url=https%3A%2F%2Fraw.githubusercontent.com%2Fbrunokc%2Fpve-kernel-builder%2Fmain%2Fconfig%2Fpve-kernel-5.15%2Fversion"></td>
-  </tr>
-</table>
--->
-### ⚠️ Starting with version 6.2.16-13-pve (expected around 18/Sep/2023), the Relaxable RMRR patch is now included with the Proxmox VE kernel. *You don't need a patched kernel to enable the feature anymore*. Just follow the [configuration steps](README.md#configuration) below to enable it. See [Proxmox Bug 4707](https://bugzilla.proxmox.com/show_bug.cgi?id=4707) for more details.
+### ⚠️ Starting with version 6.2.16-13-pve (available as of 18/Sep/2023), the Relaxable RMRR patch is now included with the Proxmox VE kernel. *You don't need a patched kernel to enable the feature anymore*. Just follow the [configuration steps](README.md#configuration) below to enable it. See [Proxmox Bug 4707](https://bugzilla.proxmox.com/show_bug.cgi?id=4707) for more details.
 
 ### Kernel series 5.15 (Proxmox 7.4) still needs to be patched and it will continue to be released here.
 ---
