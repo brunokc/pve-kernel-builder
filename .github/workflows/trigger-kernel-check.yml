@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        branch: ['master', 'pve-kernel-5.15']
+        branch: ['pve-kernel-5.15']
     uses: ./.github/workflows/new-pve-kernel-release-check.yml
     with:
       branch: ${{ matrix.branch }}
