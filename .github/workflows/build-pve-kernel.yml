@@ -111,6 +111,7 @@ jobs:
         df -h
         echo "Top packages by size:"
         dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -rn | tail -n 100
+        echo "Top folders by size:"
         sudo -E du -d 4 -ahx / | sort -rh | tail -n 100
 
     - name: Initialize environment
