@@ -107,8 +107,9 @@ jobs:
         sudo -E rm -rf /usr/share/dotnet /usr/local/lib/android /usr/local/share/powershell /usr/local/share/chromium
         echo "Disk usage: after directory removals"
         df -h
-        #dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
-        #du -d 4 -ahx / | sort -h | tail -n 100
+        echo "Top packages by size:"
+        dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
+        du -d 4 -ahx / | sort -h | tail -n 100
 
     - name: Initialize environment
       env:
