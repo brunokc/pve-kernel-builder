@@ -110,9 +110,9 @@ jobs:
         echo "Disk usage: after directory removals"
         df -h
         echo "Top packages by size:"
-        dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -rn | tail -n 100
+        dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -rn | head -n 100
         echo "Top folders by size:"
-        sudo -E du -d 4 -ahx / | sort -rh | tail -n 100
+        sudo -E du -d 4 -ahx / | sort -rh | head -n 100
 
     - name: Initialize environment
       env:
