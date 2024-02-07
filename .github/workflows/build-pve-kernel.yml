@@ -92,8 +92,8 @@ jobs:
         echo "Disk usage: start"
         df -h
         sudo -E apt-get update
-        packages="'^dotnet-.*' '^temurin-.*-jdk' '^llvm-.*' 'php.*' google-cloud-sdk azure-cli microsoft-edge-stable \
-            google-chrome-stable firefox powershell mono-devel"
+        packages="'aspnetcore-targeting-pack.*' '^dotnet-.*' '^temurin-.*-jdk' '^llvm-.*' 'php.*' google-cloud-sdk google-cloud-cli azure-cli microsoft-edge-stable \
+            google-chrome-stable firefox 'openjdk-11-.*' powershell 'postgresql-.*' 'mysql-.*-core-.*' mono-devel 'mono-llvm-.*' 'gfortran-.*'"
         # Adding cat at the end to reset the exit status to 0 in case grep doesn't find anything
         packages_to_remove=$(dpkg -l | grep -E '^ii' | awk '{ print $2 }' | eval grep -E $(printf " -e %s" $packages) | cat)
         if [ -n "${packages_to_remove}" ]; then
