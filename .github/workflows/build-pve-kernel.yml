@@ -30,6 +30,11 @@ on:
         required: false
         type: boolean
         default: true
+      display-top-disk-usages:
+        description: 'Display top packages and folders by size'
+        required: false
+        type: boolean
+        default: false
 
   workflow_call:
     inputs:
@@ -56,6 +61,11 @@ on:
         required: false
         type: boolean
         default: true
+      display-top-disk-usages:
+        description: 'Display top packages and folders by size'
+        required: false
+        type: boolean
+        default: false
     outputs:
       build-successful:
         description: 'Build was successful'
@@ -109,6 +119,11 @@ jobs:
             /usr/share/swift /opt/hostedtoolcache/PyPy /usr/local/julia1.10.0 /usr/local/aws-cli
         echo "Disk usage: after directory removals"
         df -h
+
+    - name: Display disk usage
+      if: inputs.display-top-disk-usages
+      run: |
+        set -x
         echo "Top packages by size:"
         dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -rn | head -n 100
         echo "Top folders by size:"
