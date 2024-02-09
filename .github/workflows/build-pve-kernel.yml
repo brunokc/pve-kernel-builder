@@ -156,7 +156,7 @@ jobs:
         echo "version=$(ls abi-[0-9]* | sed 's/abi/pve-kernel/g' | sed 's/-pve//g')" >> $GITHUB_OUTPUT
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@master
+      uses: actions/upload-artifact@v4
       if: steps.docker-build.outputs.status == 'success' && inputs.upload-artifacts
       with:
         name: ${{ steps.kernel-version.outputs.version }}
